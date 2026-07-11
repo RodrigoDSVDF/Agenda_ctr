@@ -2,57 +2,76 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Painel de Antecipação de Rotas — Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Painel de Antecipação de Rotas</title>
     <style>
         :root {
             --bg: #020617;
             --panel: #0f172a;
             --panel-2: #1e293b;
             --border: #1e293b;
-            --border-soft: rgba(148, 163, 184, 0.15);
+            --border-soft: rgba(148, 163, 184, 0.12);
             --amber: #f59e0b;
+            --amber-hover: #fbbf24;
             --amber-soft: rgba(245, 158, 11, 0.08);
             --amber-border: rgba(245, 158, 11, 0.25);
             --text: #f1f5f9;
             --text-dim: #94a3b8;
             --text-dimmer: #64748b;
             --emerald: #34d399;
+            --emerald-soft: rgba(52, 211, 153, 0.08);
+            --emerald-border: rgba(52, 211, 153, 0.2);
             --red: #ef4444;
             --blue: #60a5fa;
             --blue-soft: rgba(96, 165, 250, 0.08);
             --blue-border: rgba(96, 165, 250, 0.25);
             --purple: #a78bfa;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         * {
             box-sizing: border-box;
-        }
-        html,
-        body {
             margin: 0;
             padding: 0;
-            height: 100%;
         }
+
+        html,
         body {
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: var(--bg);
             color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.5;
             overflow-x: hidden;
         }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
         .app {
             display: flex;
             flex-direction: column;
             width: 100%;
             min-height: 100vh;
         }
+
         @media (min-width: 900px) {
             .app {
                 flex-direction: row;
             }
         }
 
+        /* SIDEBAR */
         .sidebar {
             width: 100%;
             background: var(--panel);
@@ -60,54 +79,76 @@
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
+            z-index: 10;
+            box-shadow: var(--shadow-sm);
         }
+
         @media (min-width: 900px) {
             .sidebar {
                 width: 300px;
+                min-height: 100vh;
+                position: sticky;
+                top: 0;
             }
         }
+
         .sidebar-header {
             padding: 20px 24px;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
+
         .icon-badge {
-            padding: 8px;
+            padding: 10px;
             background: var(--amber-soft);
             border: 1px solid var(--amber-border);
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
         }
+
+        .icon-badge:hover {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--amber);
+        }
+
         .sidebar-header h1 {
             font-size: 15px;
             font-weight: 800;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.04em;
             color: var(--amber);
             margin: 0;
+            line-height: 1.3;
         }
+
         .sidebar-header p {
             font-size: 11px;
             color: var(--text-dim);
             margin: 2px 0 0;
+            letter-spacing: 0.02em;
         }
 
         .mode-switch {
-            margin: 12px 16px;
+            margin: 16px;
             padding: 6px;
             background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 4px;
         }
+
         .mode-btn {
-            padding: 8px 4px;
-            border-radius: 8px;
+            padding: 10px 8px;
+            border-radius: var(--radius-sm);
             font-size: 11px;
             font-weight: 700;
+            letter-spacing: 0.03em;
             border: none;
             background: transparent;
             color: var(--text-dim);
@@ -116,93 +157,132 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
+            transition: var(--transition);
         }
+
         .mode-btn.active {
             background: var(--amber);
             color: var(--bg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .mode-btn:hover:not(.active) {
+            background: rgba(148, 163, 184, 0.06);
+            color: var(--text);
         }
 
         .nav {
             flex: 1;
-            padding: 8px 16px;
+            padding: 8px 12px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
         }
+
         .nav-btn {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 12px 14px;
-            border-radius: 10px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
             font-size: 13px;
             font-weight: 600;
             color: var(--text-dim);
             background: transparent;
             border: none;
-            border-left: 3px solid transparent;
             text-align: left;
             cursor: pointer;
+            transition: var(--transition);
+            position: relative;
         }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 20px;
+            border-radius: 0 3px 3px 0;
+            background: transparent;
+            transition: var(--transition);
+        }
+
         .nav-btn.active {
             background: var(--amber-soft);
             color: var(--amber);
-            border-left: 3px solid var(--amber);
         }
+
+        .nav-btn.active::before {
+            background: var(--amber);
+        }
+
         .nav-btn:hover:not(.active) {
-            background: rgba(148, 163, 184, 0.06);
+            background: rgba(148, 163, 184, 0.04);
             color: var(--text);
         }
 
         .sidebar-footer {
-            padding: 16px;
+            padding: 16px 24px;
             border-top: 1px solid var(--border);
             font-size: 11px;
             color: var(--text-dimmer);
             text-align: center;
-        }
-        .sidebar-footer .mono {
-            font-family: monospace;
-            font-size: 10px;
-            margin-top: 4px;
+            letter-spacing: 0.03em;
         }
 
+        .sidebar-footer .mono {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 10px;
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+
+        /* MAIN */
         .main {
             flex: 1;
             min-width: 0;
             padding: 20px;
             overflow-y: auto;
+            background: var(--bg);
         }
+
         @media (min-width: 900px) {
             .main {
-                padding: 32px;
+                padding: 32px 36px;
             }
         }
 
         .page-header {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 16px;
+            margin-bottom: 24px;
         }
+
         @media (min-width: 700px) {
             .page-header {
                 flex-direction: row;
                 justify-content: space-between;
-                align-items: center;
+                align-items: flex-start;
             }
         }
+
         .page-header h2 {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
             margin: 0;
-            letter-spacing: -0.01em;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
         }
+
         .page-header p {
             font-size: 13px;
             color: var(--text-dim);
-            margin: 4px 0 0;
-            max-width: 60ch;
+            margin: 6px 0 0;
+            max-width: 55ch;
+            line-height: 1.6;
         }
 
         .date-chip {
@@ -211,29 +291,33 @@
             gap: 8px;
             background: var(--panel);
             border: 1px solid var(--border);
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-family: monospace;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
             font-size: 13px;
             white-space: nowrap;
+            box-shadow: var(--shadow-sm);
         }
 
         .info-banner {
-            padding: 14px 16px;
+            padding: 16px 20px;
             background: var(--amber-soft);
             border: 1px solid var(--amber-border);
-            border-radius: 16px;
+            border-radius: var(--radius-lg);
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: flex-start;
-            margin-bottom: 20px;
+            margin-bottom: 28px;
             font-size: 12px;
             color: #cbd5e1;
+            line-height: 1.6;
         }
+
         .info-banner b {
             color: var(--amber);
             display: block;
             margin-bottom: 4px;
+            font-size: 13px;
         }
 
         .grid {
@@ -241,6 +325,7 @@
             grid-template-columns: 1fr;
             gap: 20px;
         }
+
         @media (min-width: 1000px) {
             .grid.agenda-grid {
                 grid-template-columns: 1.7fr 1fr;
@@ -253,108 +338,148 @@
         .card {
             background: var(--panel);
             border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 20px;
+            border-radius: var(--radius-xl);
+            padding: 24px;
             min-width: 0;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
         }
+
+        .card:hover {
+            border-color: rgba(148, 163, 184, 0.2);
+            box-shadow: var(--shadow-md);
+        }
+
         .card-title {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 12px;
-            margin-bottom: 16px;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
             font-size: 13px;
             font-weight: 800;
             color: var(--amber);
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
         }
+
         .card-title .badge {
-            font-family: monospace;
-            font-size: 11px;
-            font-weight: 400;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 10px;
+            font-weight: 500;
             color: var(--text-dim);
             background: var(--bg);
-            padding: 2px 8px;
-            border-radius: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
         }
 
         .timeline {
             position: relative;
-            padding-left: 18px;
+            padding-left: 20px;
             border-left: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
         }
+
         .timeline-item {
             position: relative;
         }
+
         .timeline-dot {
             position: absolute;
-            left: -23px;
-            top: 6px;
-            width: 10px;
-            height: 10px;
+            left: -26px;
+            top: 8px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             border: 2px solid #334155;
             background: var(--bg);
+            transition: var(--transition);
         }
+
         .timeline-dot.active {
             background: var(--amber);
             border-color: var(--amber);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
         }
+
         .timeline-dot.blue {
             background: var(--blue);
             border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.15);
         }
+
         .timeline-dot.purple {
             background: var(--purple);
             border-color: var(--purple);
+            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.15);
         }
+
         .timeline-card {
             background: var(--bg);
             border: 1px solid var(--border-soft);
-            border-radius: 14px;
-            padding: 14px;
+            border-radius: var(--radius-lg);
+            padding: 18px;
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 16px;
             justify-content: space-between;
             align-items: center;
+            transition: var(--transition);
         }
+
+        .timeline-card:hover {
+            border-color: rgba(148, 163, 184, 0.25);
+            box-shadow: var(--shadow-sm);
+        }
+
         .timeline-time {
-            font-family: monospace;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
             font-size: 11px;
-            font-weight: 800;
+            font-weight: 700;
             color: var(--amber);
             background: var(--amber-soft);
-            padding: 2px 8px;
+            padding: 4px 10px;
             border-radius: 6px;
             border: 1px solid var(--amber-border);
             margin-right: 8px;
+            letter-spacing: 0.04em;
         }
+
         .timeline-time.blue {
             color: var(--blue);
             background: var(--blue-soft);
             border-color: var(--blue-border);
         }
+
         .timeline-title {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 700;
+            letter-spacing: -0.01em;
         }
+
         .timeline-desc {
             font-size: 12px;
             color: var(--text-dim);
-            margin: 6px 0 0;
-            line-height: 1.5;
+            margin: 8px 0 0;
+            line-height: 1.6;
         }
+
         .timeline-meta {
             font-size: 11px;
             color: var(--text-dimmer);
-            margin-top: 6px;
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
         }
+
         .timeline-meta b {
             color: var(--text-dim);
+            font-weight: 600;
         }
 
         .btn {
@@ -362,32 +487,37 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            padding: 8px 12px;
-            border-radius: 10px;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
             font-size: 12px;
             font-weight: 700;
             border: none;
             cursor: pointer;
             white-space: nowrap;
+            transition: var(--transition);
+            letter-spacing: 0.02em;
         }
+
         .btn-amber {
             background: var(--amber);
             color: var(--bg);
         }
+
         .btn-amber:hover {
-            background: #fbbf24;
+            background: var(--amber-hover);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+            transform: translateY(-1px);
         }
+
         .btn-blue {
             background: var(--blue);
             color: var(--bg);
         }
+
         .btn-blue:hover {
             background: #93c5fd;
-        }
-        .btn-ghost {
-            background: var(--panel-2);
-            color: var(--amber);
-            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(96, 165, 250, 0.3);
+            transform: translateY(-1px);
         }
 
         .summary-row {
@@ -396,104 +526,150 @@
             align-items: center;
             background: var(--bg);
             border: 1px solid var(--border-soft);
-            border-radius: 12px;
-            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
             margin-bottom: 8px;
             cursor: pointer;
+            transition: var(--transition);
         }
+
         .summary-row:hover {
             border-color: var(--amber-border);
+            background: rgba(245, 158, 11, 0.03);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
         }
+
         .summary-row .dest {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
+            letter-spacing: -0.01em;
         }
+
         .summary-row .via {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--text-dimmer);
+            margin-top: 2px;
         }
+
         .summary-row .time {
-            font-family: monospace;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
             font-weight: 800;
             color: var(--amber);
-            font-size: 12px;
+            font-size: 13px;
             text-align: right;
         }
+
         .summary-row .dist {
-            font-family: monospace;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
             font-size: 10px;
             color: var(--text-dim);
             text-align: right;
+            margin-top: 2px;
         }
 
         label.field-label {
             display: block;
-            font-size: 11px;
-            font-weight: 800;
+            font-size: 10px;
+            font-weight: 700;
             color: var(--text-dim);
             text-transform: uppercase;
-            margin-bottom: 6px;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
         }
+
         select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 12px 16px;
             background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             color: var(--text);
-            font-size: 12px;
+            font-size: 13px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: var(--transition);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
         }
+
+        select:focus {
+            outline: none;
+            border-color: var(--amber);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
         .field {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
+
         .speed-box {
             background: var(--bg);
             border: 1px solid var(--border-soft);
-            border-radius: 12px;
-            padding: 14px;
+            border-radius: var(--radius-md);
+            padding: 18px;
         }
+
         .speed-box .row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
+
         .speed-box .value {
-            font-family: monospace;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
             font-weight: 900;
             color: var(--amber);
-            font-size: 14px;
+            font-size: 16px;
         }
+
         input[type=range] {
             width: 100%;
             -webkit-appearance: none;
-            height: 5px;
-            border-radius: 4px;
+            height: 6px;
+            border-radius: 3px;
             background: var(--panel-2);
             outline: none;
+            cursor: pointer;
         }
+
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background: var(--amber);
             cursor: pointer;
+            border: 2px solid var(--bg);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            transition: var(--transition);
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            background: var(--amber-hover);
+            transform: scale(1.1);
         }
 
         .segmented {
             display: grid;
             gap: 6px;
         }
+
         .segmented.cols-3 {
             grid-template-columns: repeat(3, 1fr);
         }
+
         .segmented.cols-2 {
             grid-template-columns: repeat(2, 1fr);
         }
+
         .seg-btn {
-            padding: 8px 4px;
-            border-radius: 10px;
+            padding: 10px 6px;
+            border-radius: var(--radius-sm);
             font-size: 11px;
             font-weight: 700;
             text-transform: capitalize;
@@ -501,139 +677,184 @@
             color: var(--text-dim);
             border: 1px solid var(--border);
             cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.02em;
         }
+
         .seg-btn.active {
             background: var(--amber);
             color: var(--bg);
             border-color: var(--amber);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .seg-btn:hover:not(.active) {
+            border-color: rgba(148, 163, 184, 0.4);
+            color: var(--text);
         }
 
         .route-header {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 16px;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 12px;
-            margin-bottom: 16px;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
         }
+
         .route-header h4 {
-            font-size: 14px;
+            font-size: 16px;
             margin: 0;
             font-weight: 800;
+            letter-spacing: -0.01em;
         }
+
         .route-header .sub {
             font-size: 12px;
             color: var(--text-dim);
-            margin-top: 2px;
+            margin-top: 4px;
         }
+
         .route-header .sub b {
             color: var(--amber);
             font-weight: 700;
         }
+
         .dist-chip {
-            font-family: monospace;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
             font-size: 11px;
             font-weight: 800;
             color: var(--emerald);
-            background: rgba(52, 211, 153, 0.08);
-            border: 1px solid rgba(52, 211, 153, 0.2);
-            padding: 6px 10px;
+            background: var(--emerald-soft);
+            border: 1px solid var(--emerald-border);
+            padding: 8px 12px;
             border-radius: 10px;
             white-space: nowrap;
         }
 
         .map-box {
-            height: 260px;
+            height: 280px;
             background: var(--bg);
             border: 1px solid var(--border-soft);
-            border-radius: 16px;
+            border-radius: var(--radius-lg);
             position: relative;
             overflow: hidden;
-            margin: 16px 0;
+            margin: 20px 0;
         }
+
         .map-box svg {
             width: 100%;
             height: 100%;
         }
+
         .map-overlay {
             position: absolute;
-            bottom: 12px;
-            left: 12px;
-            background: rgba(15, 23, 42, 0.9);
+            bottom: 16px;
+            left: 16px;
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--border);
-            padding: 10px 12px;
-            border-radius: 12px;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
         }
+
         .map-overlay .label {
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-dim);
             font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.06em;
         }
+
         .map-overlay .big {
-            font-family: monospace;
-            font-size: 20px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 24px;
             font-weight: 900;
             color: var(--amber);
-            margin: 2px 0;
+            margin: 4px 0;
+            letter-spacing: -0.02em;
         }
+
         .map-overlay .nominal {
             font-size: 9px;
             color: var(--text-dimmer);
+            letter-spacing: 0.03em;
         }
 
         .warning {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 12px;
+            gap: 10px;
+            padding: 12px 16px;
             background: var(--amber-soft);
             border: 1px solid var(--amber-border);
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             font-size: 12px;
             color: var(--amber);
+            line-height: 1.5;
         }
 
         .checklist-item {
             width: 100%;
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px;
+            gap: 14px;
+            padding: 16px;
             background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             text-align: left;
             cursor: pointer;
             color: var(--text);
             font-size: 13px;
+            font-weight: 500;
             margin-bottom: 10px;
+            transition: var(--transition);
+            letter-spacing: 0.01em;
         }
+
+        .checklist-item:hover {
+            border-color: rgba(148, 163, 184, 0.3);
+            background: rgba(15, 23, 42, 0.6);
+        }
+
         .checklist-item .dot {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             border: 2px solid #475569;
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: var(--transition);
         }
+
+        .checklist-item.done {
+            background: rgba(52, 211, 153, 0.03);
+            border-color: rgba(52, 211, 153, 0.2);
+        }
+
         .checklist-item.done .dot {
             border-color: var(--emerald);
             background: rgba(52, 211, 153, 0.15);
         }
+
         .checklist-item.done .dot::after {
             content: '✓';
             color: var(--emerald);
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 900;
         }
+
         .checklist-item.done span.label {
             color: var(--text-dim);
             text-decoration: line-through;
+            text-decoration-color: rgba(148, 163, 184, 0.4);
         }
 
         .hidden {
@@ -641,8 +862,8 @@
         }
 
         svg.icon {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2;
@@ -657,74 +878,136 @@
             font-size: 11px;
             margin-top: 8px;
         }
+
         .via-table th {
             text-align: left;
             color: var(--text-dimmer);
-            font-weight: 600;
-            padding: 6px 8px;
+            font-weight: 700;
+            padding: 10px 12px;
             border-bottom: 1px solid var(--border);
             text-transform: uppercase;
-            font-size: 10px;
+            font-size: 9px;
+            letter-spacing: 0.08em;
         }
+
         .via-table td {
-            padding: 6px 8px;
+            padding: 10px 12px;
             border-bottom: 1px solid var(--border-soft);
             color: var(--text-dim);
+            transition: var(--transition);
         }
+
         .via-table tr {
             cursor: pointer;
+            transition: var(--transition);
         }
+
         .via-table tr:hover td {
             background: var(--amber-soft);
             color: var(--text);
         }
+
         .via-table tr.active-row td {
-            background: var(--amber-soft);
+            background: rgba(245, 158, 11, 0.1);
             color: var(--amber);
             font-weight: 700;
         }
+
         .via-table .dist-col {
-            font-family: monospace;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
             font-weight: 700;
             color: var(--emerald);
             text-align: right;
         }
+
         .via-table .cond-col {
             font-size: 10px;
             color: var(--text-dimmer);
             text-align: right;
             white-space: nowrap;
+            text-transform: capitalize;
         }
+
         .tag {
             display: inline-block;
             font-size: 9px;
             font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 6px;
+            letter-spacing: 0.03em;
+            vertical-align: middle;
         }
+
         .tag-fastest {
-            background: rgba(52, 211, 153, 0.15);
+            background: rgba(52, 211, 153, 0.12);
             color: var(--emerald);
-            border: 1px solid rgba(52, 211, 153, 0.3);
+            border: 1px solid rgba(52, 211, 153, 0.25);
         }
+
         .tag-normal {
-            background: rgba(245, 158, 11, 0.12);
+            background: rgba(245, 158, 11, 0.1);
             color: var(--amber);
             border: 1px solid var(--amber-border);
         }
+
         .tag-current {
-            background: rgba(96, 165, 250, 0.15);
+            background: rgba(96, 165, 250, 0.12);
             color: var(--blue);
             border: 1px solid var(--blue-border);
         }
+
         .marcador-colchete {
             color: #f59e0b;
             font-weight: 700;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 10px;
         }
+
         .marcador-chave {
             color: #a78bfa;
             font-weight: 700;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 10px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        @media (max-width: 600px) {
+            .main {
+                padding: 16px;
+            }
+            .card {
+                padding: 16px;
+            }
+            .page-header h2 {
+                font-size: 20px;
+            }
+            .map-box {
+                height: 200px;
+            }
+            .map-overlay .big {
+                font-size: 18px;
+            }
+            .timeline-card {
+                padding: 14px;
+            }
         }
     </style>
 </head>
@@ -737,13 +1020,15 @@
                 </div>
                 <div>
                     <h1>PAINEL DE ROTAS</h1>
-                    <p>Banco Central do Brasil — Deslocamentos</p>
+                    <p>Antecipação de Cenários de Deslocamento</p>
                 </div>
             </div>
+
             <div class="mode-switch">
                 <button class="mode-btn active" id="modePresentation" onclick="setMode('presentation')">Apresentação</button>
                 <button class="mode-btn" id="modeOperational" onclick="setMode('operational')">Operacional</button>
             </div>
+
             <nav class="nav">
                 <button class="nav-btn active" id="navAgenda" onclick="setTab('agenda')">
                     <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
@@ -758,9 +1043,10 @@
                     Checklist
                 </button>
             </nav>
+
             <div class="sidebar-footer">
-                <p>Dados reais — Banco Central do Brasil</p>
-                <p class="mono">BCB · 11 JUL 2026</p>
+                <p>Projeto de Portfólio — Demonstração</p>
+                <p class="mono">SIMULADOR DE ROTAS · BCB</p>
             </div>
         </aside>
 
@@ -769,24 +1055,26 @@
                 <div class="page-header">
                     <div>
                         <h2>Painel de Logística e Antecipação</h2>
-                        <p>Trajetos oficiais a partir do Banco Central do Brasil para os principais destinos do dia.</p>
+                        <p>Trajetos de referência a partir da sede para os principais destinos do dia, com múltiplas opções de vias e condições de trânsito.</p>
                     </div>
                     <div class="date-chip">
                         <svg class="icon" style="color:var(--amber)" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
                         11 de Julho de 2026
                     </div>
                 </div>
+
                 <div class="info-banner" id="infoBanner">
                     <svg class="icon" style="color:var(--amber); margin-top:2px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v4M12 8h.01"/></svg>
                     <div>
-                        <b>Rotas oficiais — Banco Central do Brasil</b>
-                        Dados reais de distância e vias. Marcadores: <span class="marcador-colchete">[colchetes]</span> = condições normais/atuais, <span class="marcador-chave">{chaves}</span> = trânsito normal.
+                        <b>Rotas de Referência — Sede Corporativa</b>
+                        Dados de distância e vias para simulação. Marcadores: <span class="marcador-colchete">[colchetes]</span> = condições normais/atuais, <span class="marcador-chave">{chaves}</span> = trânsito normal.
                     </div>
                 </div>
+
                 <div class="grid agenda-grid">
                     <div class="card">
                         <div class="card-title">
-                            <span style="display:flex; align-items:center; gap:8px;">
+                            <span style="display:flex; align-items:center; gap:10px;">
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M9 20H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4M22 22 12 12"/></svg>
                                 Escala de Deslocamentos
                             </span>
@@ -794,9 +1082,10 @@
                         </div>
                         <div class="timeline" id="agendaTimeline"></div>
                     </div>
+
                     <div class="card">
-                        <div class="card-title" style="border:none; margin-bottom:12px;">
-                            <span style="display:flex; align-items:center; gap:8px; text-transform:uppercase;">
+                        <div class="card-title" style="border:none; margin-bottom:16px;">
+                            <span style="display:flex; align-items:center; gap:10px; text-transform:uppercase;">
                                 <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg>
                                 Resumo dos Destinos
                             </span>
@@ -810,39 +1099,45 @@
                 <div class="page-header">
                     <div>
                         <h2>Consola de Simulação de Rota</h2>
-                        <p>Selecione o destino e a via para simular o impacto de trânsito e clima no tempo estimado.</p>
+                        <p>Selecione o destino e a via para simular o impacto de trânsito e clima no tempo estimado de chegada.</p>
                     </div>
                 </div>
+
                 <div class="grid rotas-grid">
                     <div class="card">
                         <div class="card-title" style="border:none;">
-                            <span style="display:flex; align-items:center; gap:8px;">
+                            <span style="display:flex; align-items:center; gap:10px;">
                                 <svg class="icon" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-                                Definições do Trajeto
+                                Parâmetros do Trajeto
                             </span>
                         </div>
+
                         <div class="field">
-                            <label class="field-label">Destino:</label>
+                            <label class="field-label">Destino</label>
                             <select id="routeSelect" onchange="onRouteChange()"></select>
                         </div>
+
                         <div class="field speed-box">
                             <div class="row">
-                                <span class="field-label" style="margin:0;">Velocidade Média:</span>
+                                <span class="field-label" style="margin:0;">Velocidade Média</span>
                                 <span class="value" id="speedValue">60 km/h</span>
                             </div>
                             <input type="range" min="30" max="110" value="60" id="speedSlider" oninput="onSpeedChange(this.value)" />
                         </div>
+
                         <div class="field">
-                            <label class="field-label">Condição de Trânsito:</label>
+                            <label class="field-label">Condição de Trânsito</label>
                             <div class="segmented cols-3" id="trafficButtons"></div>
                         </div>
+
                         <div class="field">
-                            <label class="field-label">Clima:</label>
+                            <label class="field-label">Clima</label>
                             <div class="segmented cols-2" id="weatherButtons"></div>
                         </div>
+
                         <div class="field" style="margin-bottom:0;">
-                            <label class="field-label">Vias disponíveis (clique na tabela para selecionar):</label>
-                            <div style="max-height:240px; overflow-y:auto; border:1px solid var(--border); border-radius:12px;">
+                            <label class="field-label">Vias Disponíveis</label>
+                            <div style="max-height:240px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-md);">
                                 <table class="via-table" id="viaTable">
                                     <thead><tr><th>Via</th><th>Dist.</th><th>Cond.</th></tr></thead>
                                     <tbody id="viaTableBody"></tbody>
@@ -850,6 +1145,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="card">
                         <div class="route-header">
                             <div>
@@ -858,13 +1154,14 @@
                             </div>
                             <span class="dist-chip" id="distChip"></span>
                         </div>
+
                         <div class="map-box">
                             <svg viewBox="0 0 600 300" id="mapSvg">
-                                <path id="routePath" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="6 4" />
-                                <circle cx="280" cy="170" r="8" fill="#10b981" />
-                                <text x="265" y="152" fill="#94a3b8" font-size="10" font-weight="bold">Banco Central</text>
-                                <circle id="destCircle" cx="480" cy="60" r="8" fill="#ef4444" />
-                                <text id="destLabel" x="430" y="48" fill="#f59e0b" font-size="10" font-weight="bold"></text>
+                                <path id="routePath" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="8 6" />
+                                <circle cx="280" cy="170" r="10" fill="#10b981" stroke="#020617" stroke-width="2" />
+                                <text x="265" y="148" fill="#94a3b8" font-size="11" font-weight="bold" font-family="inherit">Sede (Origem)</text>
+                                <circle id="destCircle" cx="480" cy="60" r="10" fill="#ef4444" stroke="#020617" stroke-width="2" />
+                                <text id="destLabel" x="430" y="44" fill="#f59e0b" font-size="11" font-weight="bold" font-family="inherit"></text>
                             </svg>
                             <div class="map-overlay">
                                 <div class="label">Tempo Estimado Ajustado</div>
@@ -872,9 +1169,10 @@
                                 <div class="nominal" id="nominalTime"></div>
                             </div>
                         </div>
+
                         <div class="warning hidden" id="warningBox">
                             <svg class="icon" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                            Condições atuais aumentam o tempo estimado — considere rota alternativa.
+                            Condições atuais aumentam o tempo estimado — considere uma rota alternativa.
                         </div>
                     </div>
                 </div>
@@ -884,7 +1182,7 @@
                 <div class="page-header">
                     <div>
                         <h2>Checklist de Preparação</h2>
-                        <p>Etapas de verificação antes dos deslocamentos.</p>
+                        <p>Etapas de verificação e segurança antes de iniciar os deslocamentos do dia.</p>
                     </div>
                 </div>
                 <div class="card" style="max-width: 640px;">
@@ -896,13 +1194,13 @@
 
     <script>
         // -------------------------------------------------------------------
-        // DADOS REAIS: Banco Central → múltiplos destinos
+        // DADOS DE REFERÊNCIA — Demonstração de rotas e vias
         // Marcadores: [colchetes] = normal/atual, {chaves} = normal
         // -------------------------------------------------------------------
         const destinosData = {
             aeroporto: {
-                title: 'Banco Central ➔ Aeroporto Internacional de Brasília',
-                destination: 'Aeroporto Internacional de Brasília (SBBR)',
+                title: 'Sede ➔ Aeroporto Internacional de Brasília',
+                destination: 'Aeroporto Internacional de Brasília',
                 destCoord: { x: 480, y: 60 },
                 vias: [
                     { via: 'DF-047 e Eixo Rodoviário de Brasília', dist: 12.5, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'colchete', path: 'M 280,170 C 320,140 400,90 480,60' },
@@ -911,7 +1209,7 @@
                 ]
             },
             planalto: {
-                title: 'Banco Central ➔ Palácio do Planalto',
+                title: 'Sede ➔ Palácio do Planalto',
                 destination: 'Palácio do Planalto',
                 destCoord: { x: 380, y: 100 },
                 vias: [
@@ -921,7 +1219,7 @@
                 ]
             },
             congresso: {
-                title: 'Banco Central ➔ Congresso Nacional',
+                title: 'Sede ➔ Congresso Nacional',
                 destination: 'Congresso Nacional',
                 destCoord: { x: 400, y: 90 },
                 vias: [
@@ -930,17 +1228,17 @@
                 ]
             },
             universidade: {
-                title: 'Banco Central ➔ Universidade do Banco Central',
-                destination: 'Universidade do Banco Central',
+                title: 'Sede ➔ Universidade Corporativa',
+                destination: 'Universidade Corporativa',
                 destCoord: { x: 420, y: 120 },
                 vias: [
                     { via: 'Via S3', dist: 4.0, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'chave', path: 'M 280,170 Q 360,170 420,120' },
-                    { via: 'Estr. Parque das Nações (Via L4) / Via L4 South (Avenida das Nações)', dist: 4.8, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 350,200 400,150 420,120' },
-                    { via: 'SES 801 e Estr. Parque das Nações (Via L4) / Via L4 South (Avenida das Nações)', dist: 5.0, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 340,195 410,145 420,120' },
+                    { via: 'Estr. Parque das Nações (Via L4) / Via L4 South', dist: 4.8, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 350,200 400,150 420,120' },
+                    { via: 'SES 801 e Estr. Parque das Nações (Via L4) / Via L4 South', dist: 5.0, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 340,195 410,145 420,120' },
                 ]
             },
             piantas: {
-                title: 'Banco Central ➔ Piantas Bistrô',
+                title: 'Sede ➔ Piantas Bistrô',
                 destination: 'Piantas Bistrô',
                 destCoord: { x: 440, y: 140 },
                 vias: [
@@ -950,34 +1248,35 @@
                 ]
             },
             rubaiyat: {
-                title: 'Banco Central ➔ Rubaiyat',
+                title: 'Sede ➔ Rubaiyat',
                 destination: 'Rubaiyat',
                 destCoord: { x: 460, y: 100 },
                 vias: [
-                    { via: 'Estr. Parque das Nações (Via L4) / Via L4 South (Avenida das Nações)', dist: 5.6, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'colchete', path: 'M 280,170 C 360,200 430,130 460,100' },
-                    { via: 'Via S3 e Estr. Parque das Nações (Via L4) / Via L4 South (Avenida das Nações)', dist: 6.2, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 370,195 440,125 460,100' },
+                    { via: 'Estr. Parque das Nações (Via L4) / Via L4 South', dist: 5.6, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'colchete', path: 'M 280,170 C 360,200 430,130 460,100' },
+                    { via: 'Via S3 e Estr. Parque das Nações (Via L4) / Via L4 South', dist: 6.2, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 370,195 440,125 460,100' },
                 ]
             },
         };
 
         const agendaTimeline = [
-            { time: '08:00', title: 'Preparação e Checklist', desc: 'Verificação do veículo e documentação.', destKey: null },
-            { time: '09:00', title: 'Deslocamento para Palácio do Planalto', desc: 'Reunião institucional.', destKey: 'planalto' },
-            { time: '10:30', title: 'Deslocamento para Congresso Nacional', desc: 'Sessão e visita guiada.', destKey: 'congresso' },
+            { time: '08:00', title: 'Preparação e Checklist', desc: 'Verificação do veículo, documentação e rota do dia.', destKey: null },
+            { time: '09:00', title: 'Deslocamento para o Palácio do Planalto', desc: 'Reunião institucional.', destKey: 'planalto' },
+            { time: '10:30', title: 'Deslocamento para o Congresso Nacional', desc: 'Sessão e visita guiada.', destKey: 'congresso' },
             { time: '12:15', title: 'Almoço no Piantas Bistrô', desc: 'Almoço de negócios.', destKey: 'piantas' },
-            { time: '14:00', title: 'Universidade do Banco Central', desc: 'Palestra e evento acadêmico.', destKey: 'universidade' },
+            { time: '14:00', title: 'Universidade Corporativa', desc: 'Palestra e evento acadêmico.', destKey: 'universidade' },
             { time: '16:30', title: 'Jantar no Rubaiyat', desc: 'Encerramento com parceiros.', destKey: 'rubaiyat' },
             { time: '19:00', title: 'Deslocamento para o Aeroporto', desc: 'Embarque e retorno.', destKey: 'aeroporto' },
         ];
 
         const checklistItems = {
-            veiculo: 'Inspeção do veículo',
-            combustivel: 'Nível de combustível',
-            comunicacao: 'Equipamento de comunicação',
-            documentacao: 'Documentação da viagem',
-            rotaConfirmada: 'Rotas do dia confirmadas',
-            transitoVerificado: 'Condições de trânsito verificadas',
+            veiculo: 'Inspeção completa do veículo',
+            combustivel: 'Nível de combustível verificado',
+            comunicacao: 'Equipamento de comunicação testado',
+            documentacao: 'Documentação da viagem em ordem',
+            rotaConfirmada: 'Rotas do dia revisadas e confirmadas',
+            transitoVerificado: 'Condições de trânsito monitoradas',
             climaVerificado: 'Previsão do tempo consultada',
+            varreduraDestino: 'Varredura no local de destino',
         };
 
         let state = {
@@ -1160,11 +1459,7 @@
                 let fastest = null;
                 if (dest) {
                     const normais = dest.vias.filter(v => v.cond === 'normal' || v.cond === 'atual');
-                    if (normais.length > 0) {
-                        fastest = normais.reduce((a, b) => a.dist < b.dist ? a : b);
-                    } else {
-                        fastest = dest.vias[0];
-                    }
+                    fastest = normais.length > 0 ? normais.reduce((a, b) => a.dist < b.dist ? a : b) : dest.vias[0];
                 }
                 const dotClass = task.destKey ? (idx % 2 === 0 ? 'active' : 'blue') : '';
                 return `
@@ -1195,7 +1490,7 @@
                     <div class="summary-row" onclick="triggerRoute('${key}')">
                         <div>
                             <div class="dest">${d.destination}</div>
-                            <div class="via">${d.vias.length} via(s) · Melhor: ${best.via.substring(0,45)}${best.via.length>45?'...':''}</div>
+                            <div class="via">${d.vias.length} via(s) · Melhor: ${best.via.substring(0, 40)}${best.via.length > 40 ? '...' : ''}</div>
                         </div>
                         <div>
                             <div class="time">${minDist} km</div>
