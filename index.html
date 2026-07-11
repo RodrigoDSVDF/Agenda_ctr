@@ -22,6 +22,7 @@
             --blue: #60a5fa;
             --blue-soft: rgba(96, 165, 250, 0.08);
             --blue-border: rgba(96, 165, 250, 0.25);
+            --purple: #a78bfa;
         }
         * {
             box-sizing: border-box;
@@ -306,6 +307,10 @@
             background: var(--blue);
             border-color: var(--blue);
         }
+        .timeline-dot.purple {
+            background: var(--purple);
+            border-color: var(--purple);
+        }
         .timeline-card {
             background: var(--bg);
             border: 1px solid var(--border-soft);
@@ -394,6 +399,10 @@
             border-radius: 12px;
             padding: 10px 12px;
             margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .summary-row:hover {
+            border-color: var(--amber-border);
         }
         .summary-row .dest {
             font-size: 12px;
@@ -425,11 +434,8 @@
             text-transform: uppercase;
             margin-bottom: 6px;
         }
-        select,
-        input[type=range] {
-            width: 100%;
-        }
         select {
+            width: 100%;
             padding: 10px 12px;
             background: var(--bg);
             border: 1px solid var(--border);
@@ -459,6 +465,7 @@
             font-size: 14px;
         }
         input[type=range] {
+            width: 100%;
             -webkit-appearance: none;
             height: 5px;
             border-radius: 4px;
@@ -499,36 +506,6 @@
             background: var(--amber);
             color: var(--bg);
             border-color: var(--amber);
-        }
-
-        .via-choice {
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            text-align: left;
-            cursor: pointer;
-            color: var(--text);
-        }
-        .via-choice.active {
-            border-color: var(--amber);
-            background: var(--amber-soft);
-            color: var(--amber);
-        }
-        .via-choice .label {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            display: block;
-        }
-        .via-choice .sub {
-            font-size: 9px;
-            color: var(--text-dimmer);
-            display: block;
-            margin-top: 4px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
         .route-header {
@@ -741,34 +718,18 @@
             color: var(--blue);
             border: 1px solid var(--blue-border);
         }
-
-        .scenario-picker {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
-        .scenario-chip {
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 10px;
+        .marcador-colchete {
+            color: #f59e0b;
             font-weight: 700;
-            cursor: pointer;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text-dim);
-            white-space: nowrap;
         }
-        .scenario-chip.active {
-            background: var(--blue-soft);
-            border-color: var(--blue-border);
-            color: var(--blue);
+        .marcador-chave {
+            color: #a78bfa;
+            font-weight: 700;
         }
     </style>
 </head>
 <body>
     <div class="app">
-
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="icon-badge">
@@ -776,75 +737,68 @@
                 </div>
                 <div>
                     <h1>PAINEL DE ROTAS</h1>
-                    <p>Antecipação de Cenários de Deslocamento</p>
+                    <p>Banco Central do Brasil — Deslocamentos</p>
                 </div>
             </div>
-
             <div class="mode-switch">
                 <button class="mode-btn active" id="modePresentation" onclick="setMode('presentation')">Apresentação</button>
                 <button class="mode-btn" id="modeOperational" onclick="setMode('operational')">Operacional</button>
             </div>
-
             <nav class="nav">
                 <button class="nav-btn active" id="navAgenda" onclick="setTab('agenda')">
                     <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                    Agenda &amp; Hub da Sede
+                    Agenda &amp; Destinos
                 </button>
                 <button class="nav-btn" id="navRotas" onclick="setTab('rotas')">
                     <svg class="icon" viewBox="0 0 24 24"><path d="m3 11 19-9-9 19-2-8-8-2Z"/></svg>
-                    Consola de Simulação de Rota
+                    Simulação de Rota
                 </button>
                 <button class="nav-btn" id="navChecklist" onclick="setTab('checklist')">
                     <svg class="icon" viewBox="0 0 24 24"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                    Checklist de Preparação
+                    Checklist
                 </button>
             </nav>
-
             <div class="sidebar-footer">
-                <p>Projeto de portfólio — dados reais de Brasília</p>
-                <p class="mono">DEMO-2026.07-ROTAS · BCB → SBBR</p>
+                <p>Dados reais — Banco Central do Brasil</p>
+                <p class="mono">BCB · 11 JUL 2026</p>
             </div>
         </aside>
 
         <main class="main">
-
             <section id="tabAgenda">
                 <div class="page-header">
                     <div>
                         <h2>Painel de Logística e Antecipação</h2>
-                        <p>Trajetos do Banco Central do Brasil até o Aeroporto Internacional de Brasília, com dados reais de vias e distâncias.</p>
+                        <p>Trajetos oficiais a partir do Banco Central do Brasil para os principais destinos do dia.</p>
                     </div>
                     <div class="date-chip">
                         <svg class="icon" style="color:var(--amber)" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
                         11 de Julho de 2026
                     </div>
                 </div>
-
                 <div class="info-banner" id="infoBanner">
                     <svg class="icon" style="color:var(--amber); margin-top:2px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v4M12 8h.01"/></svg>
                     <div>
-                        <b>Banco Central do Brasil → Aeroporto Internacional de Brasília (SBBR)</b>
-                        Dados reais de distância e vias. Os marcadores [colchetes], {chaves} e texto simples representam diferentes cenários de trânsito e condições, conforme os dados fornecidos.
+                        <b>Rotas oficiais — Banco Central do Brasil</b>
+                        Dados reais de distância e vias. Marcadores: <span class="marcador-colchete">[colchetes]</span> = condições normais/atuais, <span class="marcador-chave">{chaves}</span> = trânsito normal.
                     </div>
                 </div>
-
                 <div class="grid agenda-grid">
                     <div class="card">
                         <div class="card-title">
                             <span style="display:flex; align-items:center; gap:8px;">
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M9 20H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4M22 22 12 12"/></svg>
-                                Escala de Deslocamentos do Dia
+                                Escala de Deslocamentos
                             </span>
-                            <span class="badge">Banco Central → Aeroporto</span>
+                            <span class="badge">6 Destinos</span>
                         </div>
                         <div class="timeline" id="agendaTimeline"></div>
                     </div>
-
                     <div class="card">
                         <div class="card-title" style="border:none; margin-bottom:12px;">
                             <span style="display:flex; align-items:center; gap:8px; text-transform:uppercase;">
                                 <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg>
-                                Resumo de Vias por Cenário
+                                Resumo dos Destinos
                             </span>
                         </div>
                         <div id="summaryList"></div>
@@ -856,10 +810,9 @@
                 <div class="page-header">
                     <div>
                         <h2>Consola de Simulação de Rota</h2>
-                        <p>Compare as diversas vias entre o Banco Central e o Aeroporto de Brasília e veja o impacto de trânsito e clima no tempo estimado.</p>
+                        <p>Selecione o destino e a via para simular o impacto de trânsito e clima no tempo estimado.</p>
                     </div>
                 </div>
-
                 <div class="grid rotas-grid">
                     <div class="card">
                         <div class="card-title" style="border:none;">
@@ -868,24 +821,10 @@
                                 Definições do Trajeto
                             </span>
                         </div>
-
                         <div class="field">
-                            <label class="field-label">Cenário de Trânsito:</label>
-                            <div class="scenario-picker" id="scenarioPicker"></div>
+                            <label class="field-label">Destino:</label>
+                            <select id="routeSelect" onchange="onRouteChange()"></select>
                         </div>
-
-                        <div class="field">
-                            <label class="field-label">Via Selecionada:</label>
-                            <div style="max-height:280px; overflow-y:auto; border:1px solid var(--border); border-radius:12px;">
-                                <table class="via-table" id="viaTable">
-                                    <thead>
-                                        <tr><th>Via</th><th>Dist.</th><th>Condição</th></tr>
-                                    </thead>
-                                    <tbody id="viaTableBody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
                         <div class="field speed-box">
                             <div class="row">
                                 <span class="field-label" style="margin:0;">Velocidade Média:</span>
@@ -893,18 +832,24 @@
                             </div>
                             <input type="range" min="30" max="110" value="60" id="speedSlider" oninput="onSpeedChange(this.value)" />
                         </div>
-
                         <div class="field">
                             <label class="field-label">Condição de Trânsito:</label>
                             <div class="segmented cols-3" id="trafficButtons"></div>
                         </div>
-
                         <div class="field">
                             <label class="field-label">Clima:</label>
                             <div class="segmented cols-2" id="weatherButtons"></div>
                         </div>
+                        <div class="field" style="margin-bottom:0;">
+                            <label class="field-label">Vias disponíveis (clique na tabela para selecionar):</label>
+                            <div style="max-height:240px; overflow-y:auto; border:1px solid var(--border); border-radius:12px;">
+                                <table class="via-table" id="viaTable">
+                                    <thead><tr><th>Via</th><th>Dist.</th><th>Cond.</th></tr></thead>
+                                    <tbody id="viaTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-
                     <div class="card">
                         <div class="route-header">
                             <div>
@@ -913,13 +858,12 @@
                             </div>
                             <span class="dist-chip" id="distChip"></span>
                         </div>
-
                         <div class="map-box">
                             <svg viewBox="0 0 600 300" id="mapSvg">
                                 <path id="routePath" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="6 4" />
                                 <circle cx="280" cy="170" r="8" fill="#10b981" />
-                                <text x="265" y="152" fill="#94a3b8" font-size="10" font-weight="bold">Banco Central (Origem)</text>
-                                <circle cx="480" cy="60" r="8" fill="#ef4444" />
+                                <text x="265" y="152" fill="#94a3b8" font-size="10" font-weight="bold">Banco Central</text>
+                                <circle id="destCircle" cx="480" cy="60" r="8" fill="#ef4444" />
                                 <text id="destLabel" x="430" y="48" fill="#f59e0b" font-size="10" font-weight="bold"></text>
                             </svg>
                             <div class="map-overlay">
@@ -928,15 +872,9 @@
                                 <div class="nominal" id="nominalTime"></div>
                             </div>
                         </div>
-
                         <div class="warning hidden" id="warningBox">
                             <svg class="icon" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                             Condições atuais aumentam o tempo estimado — considere rota alternativa.
-                        </div>
-
-                        <div style="margin-top:16px; padding:12px; background:var(--bg); border-radius:12px; border:1px solid var(--border-soft);">
-                            <p style="font-size:11px; color:var(--text-dimmer); margin:0 0 8px; text-transform:uppercase; font-weight:700;">Outras Vias Disponíveis (consulta rápida)</p>
-                            <div id="otherViasList" style="font-size:10px; color:var(--text-dim); line-height:1.6;"></div>
                         </div>
                     </div>
                 </div>
@@ -946,83 +884,90 @@
                 <div class="page-header">
                     <div>
                         <h2>Checklist de Preparação</h2>
-                        <p>Etapas de verificação antes de iniciar os deslocamentos do dia.</p>
+                        <p>Etapas de verificação antes dos deslocamentos.</p>
                     </div>
                 </div>
                 <div class="card" style="max-width: 640px;">
                     <div id="checklistBox"></div>
                 </div>
             </section>
-
         </main>
     </div>
 
     <script>
         // -------------------------------------------------------------------
-        // DADOS REAIS: Banco Central → Aeroporto Internacional de Brasília
-        // Marcadores originais: [...] = trânsito normal / rápido
-        //                      {...} = trânsito normal (chaves)
-        //                      texto simples = condições atuais do trânsito
+        // DADOS REAIS: Banco Central → múltiplos destinos
+        // Marcadores: [colchetes] = normal/atual, {chaves} = normal
         // -------------------------------------------------------------------
-        const bcAeroportoVias = [
-            // Grupo: DF-047 (colchetes — trânsito normal/rápido)
-            { via: 'DF-047 e Eixo Rodoviário de Brasília', dist: 12.5, cond: 'normal',
-                tag: 'Trajeto mais rápido, trânsito normal', grupo: 'df047', path: 'M 280,170 C 320,140 400,90 480,60' },
-            { via: 'DF-047 e ERL – Sul', dist: 12.4, cond: 'normal', tag: '', grupo: 'df047', path: 'M 280,170 C 310,145 390,95 480,60' },
-            { via: 'DF-047 e ERW – Sul', dist: 13.0, cond: 'normal', tag: '', grupo: 'df047', path: 'M 280,170 C 330,150 410,100 480,60' },
-
-            // Grupo: Eixo Monumental (colchete — trânsito fluindo mais que o normal)
-            { via: 'Eixo Monumental / Via S1', dist: 3.3, cond: 'fluido', tag: 'Trânsito fluindo mais que o normal',
-                grupo: 'eixo', path: 'M 280,170 Q 360,120 480,60' },
-            { via: 'Eixo Rodoviário de Brasília e Eixo Monumental / Via S1', dist: 13.7, cond: 'normal', tag: '',
-                grupo: 'eixo', path: 'M 280,170 Q 340,130 480,60' },
-
-            // Grupo: Via L4 (colchetes — trânsito normal)
-            { via: 'Estr. Parque das Nações (Via L4) / Via L4 South', dist: 5.6, cond: 'normal',
-                tag: 'Trajeto mais rápido, trânsito normal', grupo: 'l4', path: 'M 280,170 C 350,200 430,120 480,60' },
-            { via: 'Estr. Parque das Nações (Via L4) / Via L4 South', dist: 4.8, cond: 'normal', tag: '', grupo: 'l4',
-                path: 'M 280,170 C 340,195 420,115 480,60' },
-            { via: 'SES 801 e Estr. Parque das Nações (Via L4) / Via L4 South', dist: 5.0, cond: 'normal', tag: '',
-                grupo: 'l4', path: 'M 280,170 C 345,190 425,110 480,60' },
-            { via: 'Via S3 e Estr. Parque das Nações (Via L4) / Via L4 South', dist: 6.2, cond: 'normal', tag: '',
-                grupo: 'l4', path: 'M 280,170 C 355,205 430,125 480,60' },
-
-            // Grupo: Chaves (trânsito normal)
-            { via: 'Via S3', dist: 4.0, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', grupo: 'chaves',
-                path: 'M 280,170 Q 370,180 480,60' },
-            { via: 'Via L2 Sul', dist: 5.7, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', grupo: 'chaves',
-                path: 'M 280,170 Q 380,170 480,60' },
-            { via: 'ERL – Sul', dist: 6.7, cond: 'normal', tag: '', grupo: 'chaves', path: 'M 280,170 Q 390,160 480,60' },
-            { via: 'ERW – Sul', dist: 6.9, cond: 'normal', tag: '', grupo: 'chaves', path: 'M 280,170 Q 395,155 480,60' },
-
-            // Grupo: Condições atuais (texto simples)
-            { via: 'DF-047 e Eixo Rodoviário de Brasília', dist: 15.4, cond: 'atual',
-                tag: 'Trajeto mais rápido agora nas condições atuais', grupo: 'atual', path: 'M 280,170 C 300,130 380,80 480,60' },
-            { via: 'DF-047, Eixo Rodoviário de Brasília e Eixo Monumental', dist: 15.6, cond: 'atual', tag: '',
-                grupo: 'atual', path: 'M 280,170 C 310,125 390,75 480,60' },
-            { via: 'Estr. Parque das Nações (Via L4)', dist: 17.4, cond: 'atual', tag: '', grupo: 'atual',
-                path: 'M 280,170 C 360,210 440,130 480,60' },
-        ];
-
-        const routesDatabase = {
-            bc_aeroporto: {
+        const destinosData = {
+            aeroporto: {
                 title: 'Banco Central ➔ Aeroporto Internacional de Brasília',
                 destination: 'Aeroporto Internacional de Brasília (SBBR)',
-                vias: bcAeroportoVias,
+                destCoord: { x: 480, y: 60 },
+                vias: [
+                    { via: 'DF-047 e Eixo Rodoviário de Brasília', dist: 12.5, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'colchete', path: 'M 280,170 C 320,140 400,90 480,60' },
+                    { via: 'DF-047 e ERL – Sul', dist: 12.4, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 310,145 390,95 480,60' },
+                    { via: 'DF-047 e ERW – Sul', dist: 13.0, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 330,150 410,100 480,60' },
+                ]
+            },
+            planalto: {
+                title: 'Banco Central ➔ Palácio do Planalto',
+                destination: 'Palácio do Planalto',
+                destCoord: { x: 380, y: 100 },
+                vias: [
+                    { via: 'Eixo Monumental', dist: 3.7, cond: 'atual', tag: 'Trajeto mais rápido agora nas condições atuais do trânsito', marcador: 'colchete', path: 'M 280,170 Q 340,120 380,100' },
+                    { via: 'Eixo Rodoviário de Brasília e Eixo Monumental', dist: 4.1, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 Q 330,130 380,100' },
+                    { via: 'Estr. Parque das Nações (Via L4)', dist: 7.2, cond: 'normal', tag: '10 min', marcador: 'colchete', tempoNominalMinutos: 10, path: 'M 280,170 C 350,200 400,140 380,100' },
+                ]
+            },
+            congresso: {
+                title: 'Banco Central ➔ Congresso Nacional',
+                destination: 'Congresso Nacional',
+                destCoord: { x: 400, y: 90 },
+                vias: [
+                    { via: 'Eixo Monumental / Via S1', dist: 3.5, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'colchete', path: 'M 280,170 Q 350,115 400,90' },
+                    { via: 'Eixo Rodoviário de Brasília e Eixo Monumental / Via S1', dist: 3.9, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 Q 340,120 400,90' },
+                ]
+            },
+            universidade: {
+                title: 'Banco Central ➔ Universidade do Banco Central',
+                destination: 'Universidade do Banco Central',
+                destCoord: { x: 420, y: 120 },
+                vias: [
+                    { via: 'Via S3', dist: 4.0, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'chave', path: 'M 280,170 Q 360,170 420,120' },
+                    { via: 'Estr. Parque das Nações (Via L4) / Via L4 South (Avenida das Nações)', dist: 4.8, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 350,200 400,150 420,120' },
+                    { via: 'SES 801 e Estr. Parque das Nações (Via L4) / Via L4 South (Avenida das Nações)', dist: 5.0, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 340,195 410,145 420,120' },
+                ]
+            },
+            piantas: {
+                title: 'Banco Central ➔ Piantas Bistrô',
+                destination: 'Piantas Bistrô',
+                destCoord: { x: 440, y: 140 },
+                vias: [
+                    { via: 'Via L2 Sul', dist: 5.7, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'chave', path: 'M 280,170 Q 370,180 440,140' },
+                    { via: 'ERL – Sul', dist: 6.7, cond: 'normal', tag: '', marcador: 'chave', path: 'M 280,170 Q 380,175 440,140' },
+                    { via: 'ERW – Sul', dist: 6.9, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 Q 390,170 440,140' },
+                ]
+            },
+            rubaiyat: {
+                title: 'Banco Central ➔ Rubaiyat',
+                destination: 'Rubaiyat',
+                destCoord: { x: 460, y: 100 },
+                vias: [
+                    { via: 'Estr. Parque das Nações (Via L4) / Via L4 South (Avenida das Nações)', dist: 5.6, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'colchete', path: 'M 280,170 C 360,200 430,130 460,100' },
+                    { via: 'Via S3 e Estr. Parque das Nações (Via L4) / Via L4 South (Avenida das Nações)', dist: 6.2, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 370,195 440,125 460,100' },
+                ]
             },
         };
 
         const agendaTimeline = [
-            { time: '08:00', title: 'Verificação de Protocolo', desc: 'Checklist do veículo e conferência de rota do dia.',
-                routeId: null },
-            { time: '09:30', title: 'Deslocamento Principal',
-                desc: 'Banco Central ➔ Aeroporto Internacional de Brasília. Verificar condições de trânsito e escolher via.',
-                routeId: 'bc_aeroporto' },
-            { time: '11:00', title: 'Previsão de Chegada', desc: 'ETA no Aeroporto conforme via e condições selecionadas.',
-                routeId: 'bc_aeroporto' },
-            { time: '14:00', title: 'Retorno (Logística Reversa)',
-                desc: 'Aeroporto ➔ Banco Central. Utilizar mesma via ou rota alternativa conforme trânsito.',
-                routeId: 'bc_aeroporto' },
+            { time: '08:00', title: 'Preparação e Checklist', desc: 'Verificação do veículo e documentação.', destKey: null },
+            { time: '09:00', title: 'Deslocamento para Palácio do Planalto', desc: 'Reunião institucional.', destKey: 'planalto' },
+            { time: '10:30', title: 'Deslocamento para Congresso Nacional', desc: 'Sessão e visita guiada.', destKey: 'congresso' },
+            { time: '12:15', title: 'Almoço no Piantas Bistrô', desc: 'Almoço de negócios.', destKey: 'piantas' },
+            { time: '14:00', title: 'Universidade do Banco Central', desc: 'Palestra e evento acadêmico.', destKey: 'universidade' },
+            { time: '16:30', title: 'Jantar no Rubaiyat', desc: 'Encerramento com parceiros.', destKey: 'rubaiyat' },
+            { time: '19:00', title: 'Deslocamento para o Aeroporto', desc: 'Embarque e retorno.', destKey: 'aeroporto' },
         ];
 
         const checklistItems = {
@@ -1030,20 +975,16 @@
             combustivel: 'Nível de combustível',
             comunicacao: 'Equipamento de comunicação',
             documentacao: 'Documentação da viagem',
-            rotaConfirmada: 'Rota do dia confirmada',
-            transitoVerificado: 'Condições de trânsito verificadas (DF-047, Eixo, L4)',
+            rotaConfirmada: 'Rotas do dia confirmadas',
+            transitoVerificado: 'Condições de trânsito verificadas',
             climaVerificado: 'Previsão do tempo consultada',
         };
 
-        // -------------------------------------------------------------------
-        // ESTADO
-        // -------------------------------------------------------------------
         let state = {
             tab: 'agenda',
             mode: 'presentation',
-            routeId: 'bc_aeroporto',
+            destKey: 'aeroporto',
             viaIndex: 0,
-            scenario: 'todos',
             speed: 60,
             traffic: 'normal',
             weather: 'sol',
@@ -1058,6 +999,7 @@
             document.getElementById('navAgenda').classList.toggle('active', tab === 'agenda');
             document.getElementById('navRotas').classList.toggle('active', tab === 'rotas');
             document.getElementById('navChecklist').classList.toggle('active', tab === 'checklist');
+            if (tab === 'rotas') renderAllRoute();
         }
 
         function setMode(mode) {
@@ -1067,56 +1009,42 @@
             document.getElementById('infoBanner').classList.toggle('hidden', mode !== 'presentation');
         }
 
-        function triggerRoute(routeId) {
-            state.routeId = routeId;
+        function triggerRoute(destKey) {
+            state.destKey = destKey;
             state.viaIndex = 0;
-            state.scenario = 'todos';
+            document.getElementById('routeSelect').value = destKey;
             setTab('rotas');
-            renderRoute();
-            renderScenarioPicker();
-            renderViaTable();
+            renderAllRoute();
         }
 
         function onRouteChange() {
+            state.destKey = document.getElementById('routeSelect').value;
             state.viaIndex = 0;
-            renderRoute();
-            renderViaTable();
+            renderAllRoute();
         }
 
         function onSpeedChange(val) {
             state.speed = parseInt(val);
             document.getElementById('speedValue').textContent = state.speed + ' km/h';
-            renderRoute();
-        }
-
-        function setScenario(scenario) {
-            state.scenario = scenario;
-            state.viaIndex = 0;
-            renderScenarioPicker();
-            renderViaTable();
-            renderRoute();
+            renderRouteSimulation();
         }
 
         function selectVia(index) {
             state.viaIndex = index;
             renderViaTable();
-            renderRoute();
+            renderRouteSimulation();
         }
 
         function setTraffic(val) {
             state.traffic = val;
-            document.querySelectorAll('#trafficButtons .seg-btn').forEach(b => {
-                b.classList.toggle('active', b.dataset.val === val);
-            });
-            renderRoute();
+            document.querySelectorAll('#trafficButtons .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.val === val));
+            renderRouteSimulation();
         }
 
         function setWeather(val) {
             state.weather = val;
-            document.querySelectorAll('#weatherButtons .seg-btn').forEach(b => {
-                b.classList.toggle('active', b.dataset.val === val);
-            });
-            renderRoute();
+            document.querySelectorAll('#weatherButtons .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.val === val));
+            renderRouteSimulation();
         }
 
         function toggleChecklist(key) {
@@ -1124,34 +1052,27 @@
             renderChecklist();
         }
 
-        function getFilteredVias() {
-            const allVias = routesDatabase['bc_aeroporto'].vias;
-            if (state.scenario === 'todos') return allVias;
-            return allVias.filter(v => v.grupo === state.scenario);
-        }
-
         function getActiveVia() {
-            const filtered = getFilteredVias();
-            if (filtered.length === 0) return routesDatabase['bc_aeroporto'].vias[0];
-            if (state.viaIndex >= filtered.length) state.viaIndex = 0;
-            return filtered[state.viaIndex];
+            const destino = destinosData[state.destKey];
+            if (!destino) return null;
+            const vias = destino.vias;
+            if (vias.length === 0) return null;
+            const idx = Math.min(state.viaIndex, vias.length - 1);
+            return vias[idx];
         }
 
         function calcTime() {
             const via = getActiveVia();
+            if (!via) return { nominalMins: 0, nominalSecs: 0, adjustedMins: 0, adjustedSecs: 0, distance: 0, viaName: '', path: '' };
             const distance = via.dist;
             const timeInHours = distance / state.speed;
             const totalSeconds = Math.round(timeInHours * 3600);
-
             let trafficMultiplier = 1.0;
             if (state.traffic === 'lento') trafficMultiplier = 1.4;
             if (state.traffic === 'intenso') trafficMultiplier = 1.9;
-
             let weatherDelay = 0;
             if (state.weather === 'chuva') weatherDelay = 120;
-
             const adjustedSeconds = Math.round(totalSeconds * trafficMultiplier + weatherDelay);
-
             return {
                 nominalMins: Math.floor(totalSeconds / 60),
                 nominalSecs: totalSeconds % 60,
@@ -1160,129 +1081,125 @@
                 distance,
                 viaName: via.via,
                 path: via.path,
-                cond: via.cond,
                 tag: via.tag,
+                tempoNominalMinutos: via.tempoNominalMinutos || null,
             };
         }
 
-        function renderRoute() {
-            const routeData = routesDatabase[state.routeId];
+        function renderRouteSimulation() {
+            const destino = destinosData[state.destKey];
+            if (!destino) return;
             const t = calcTime();
             const via = getActiveVia();
-
-            document.getElementById('routeTitle').textContent = routeData.title;
+            document.getElementById('routeTitle').textContent = destino.title;
             document.getElementById('viaActiveName').textContent = t.viaName + (t.tag ? ' (' + t.tag + ')' : '');
             document.getElementById('distChip').textContent = t.distance + ' km total';
             document.getElementById('routePath').setAttribute('d', t.path);
-            document.getElementById('destLabel').textContent = routeData.destination;
+            document.getElementById('destLabel').textContent = destino.destination;
+            document.getElementById('destCircle').setAttribute('cx', destino.destCoord.x);
+            document.getElementById('destCircle').setAttribute('cy', destino.destCoord.y);
+            document.getElementById('destLabel').setAttribute('x', destino.destCoord.x - 50);
+            document.getElementById('destLabel').setAttribute('y', destino.destCoord.y - 12);
             document.getElementById('adjustedTime').textContent = t.adjustedMins + 'm ' + t.adjustedSecs + 's';
-            document.getElementById('nominalTime').textContent = 'Tempo nominal sem trânsito: ' + t.nominalMins + 'm ' +
-                t.nominalSecs + 's';
-
+            let nominalText = 'Tempo nominal sem trânsito: ' + t.nominalMins + 'm ' + t.nominalSecs + 's';
+            if (t.tempoNominalMinutos) {
+                nominalText += ' (referência: ' + t.tempoNominalMinutos + ' min)';
+            }
+            document.getElementById('nominalTime').textContent = nominalText;
             const warn = state.traffic === 'intenso' || state.weather === 'chuva';
             document.getElementById('warningBox').classList.toggle('hidden', !warn);
-
-            const allVias = routesDatabase['bc_aeroporto'].vias;
-            const otherVias = allVias.filter((v, i) => i !== allVias.indexOf(via)).slice(0, 8);
-            document.getElementById('otherViasList').innerHTML = otherVias.map(v => {
-                const tagHtml = v.tag ?
-                    '<span class="tag ' + (v.cond === 'atual' ? 'tag-current' : v.cond === 'fluido' ? 'tag-fastest' :
-                        'tag-normal') + '">' + v.tag.replace('Trajeto mais rápido, ', '').replace(
-                        'Trajeto mais rápido agora nas ', '') + '</span>' :
-                    '';
-                return '• ' + v.via + ' — <b>' + v.dist + ' km</b> (' + v.cond + ')' + tagHtml;
-            }).join('<br>');
         }
 
         function renderViaTable() {
-            const filtered = getFilteredVias();
+            const destino = destinosData[state.destKey];
+            if (!destino) return;
+            const vias = destino.vias;
             const tbody = document.getElementById('viaTableBody');
-            tbody.innerHTML = filtered.map((v, i) => {
+            tbody.innerHTML = vias.map((v, i) => {
                 const activeClass = i === state.viaIndex ? ' active-row' : '';
-                const tagHtml = v.tag ?
-                    '<span class="tag ' + (v.cond === 'atual' ? 'tag-current' : v.cond === 'fluido' ?
-                        'tag-fastest' : 'tag-normal') + '">' + v.tag.replace('Trajeto mais rápido, ', '')
-                    .replace('Trajeto mais rápido agora nas ', '') + '</span>' :
-                    '';
+                const marcadorSymbol = v.marcador === 'colchete' ? '[ ]' : '{ }';
+                const marcadorClass = v.marcador === 'colchete' ? 'marcador-colchete' : 'marcador-chave';
+                const tagHtml = v.tag ? '<span class="tag ' + (v.cond === 'atual' ? 'tag-current' : 'tag-normal') + '">' + v.tag + '</span>' : '';
                 return `
                     <tr class="${activeClass}" onclick="selectVia(${i})">
-                        <td>${v.via} ${tagHtml}</td>
+                        <td><span class="${marcadorClass}">${marcadorSymbol}</span> ${v.via} ${tagHtml}</td>
                         <td class="dist-col">${v.dist} km</td>
                         <td class="cond-col">${v.cond}</td>
                     </tr>`;
             }).join('');
         }
 
-        function renderScenarioPicker() {
-            const picker = document.getElementById('scenarioPicker');
-            const scenarios = [
-                { key: 'todos', label: 'Todas as Vias' },
-                { key: 'df047', label: 'DF-047' },
-                { key: 'eixo', label: 'Eixo Monumental' },
-                { key: 'l4', label: 'Via L4' },
-                { key: 'chaves', label: 'Chaves' },
-                { key: 'atual', label: 'Condições Atuais' },
-            ];
-            picker.innerHTML = scenarios.map(s => `
-                <button class="scenario-chip ${state.scenario === s.key ? 'active' : ''}" onclick="setScenario('${s.key}')">${s.label}</button>
-            `).join('');
+        function renderAllRoute() {
+            renderViaTable();
+            renderRouteSimulation();
+        }
+
+        function initRouteSelect() {
+            const sel = document.getElementById('routeSelect');
+            sel.innerHTML = Object.keys(destinosData).map(key =>
+                `<option value="${key}">➔ ${destinosData[key].destination}</option>`
+            ).join('');
+            sel.value = state.destKey;
+        }
+
+        function initSegments() {
+            const trafficEl = document.getElementById('trafficButtons');
+            trafficEl.innerHTML = ['normal', 'lento', 'intenso'].map(v =>
+                `<button class="seg-btn ${v === state.traffic ? 'active' : ''}" data-val="${v}" onclick="setTraffic('${v}')">${v}</button>`
+            ).join('');
+            const weatherEl = document.getElementById('weatherButtons');
+            weatherEl.innerHTML = ['sol', 'chuva'].map(v =>
+                `<button class="seg-btn ${v === state.weather ? 'active' : ''}" data-val="${v}" onclick="setWeather('${v}')">${v}</button>`
+            ).join('');
         }
 
         function renderAgenda() {
             const timelineEl = document.getElementById('agendaTimeline');
-            const routeData = routesDatabase['bc_aeroporto'];
             timelineEl.innerHTML = agendaTimeline.map((task, idx) => {
-                const hasRoute = !!task.routeId;
-                const isBlue = idx >= 2;
-                const fastestVia = routeData.vias.find(v => v.tag.includes('mais rápido'));
-                const currentVia = routeData.vias.find(v => v.cond === 'atual' && v.tag.includes('mais rápido'));
-                const bestDist = fastestVia ? fastestVia.dist : routeData.vias[0].dist;
-                const bestViaName = fastestVia ? fastestVia.via : routeData.vias[0].via;
-                const currentDist = currentVia ? currentVia.dist : null;
-                const currentViaName = currentVia ? currentVia.via : null;
+                const dest = task.destKey ? destinosData[task.destKey] : null;
+                let fastest = null;
+                if (dest) {
+                    const normais = dest.vias.filter(v => v.cond === 'normal' || v.cond === 'atual');
+                    if (normais.length > 0) {
+                        fastest = normais.reduce((a, b) => a.dist < b.dist ? a : b);
+                    } else {
+                        fastest = dest.vias[0];
+                    }
+                }
+                const dotClass = task.destKey ? (idx % 2 === 0 ? 'active' : 'blue') : '';
                 return `
                     <div class="timeline-item">
-                        <span class="timeline-dot ${hasRoute ? (isBlue ? 'blue' : 'active') : ''}"></span>
+                        <span class="timeline-dot ${dotClass}"></span>
                         <div class="timeline-card">
                             <div style="flex:1; min-width:200px;">
-                                <span class="timeline-time ${isBlue ? 'blue' : ''}">${task.time}</span>
+                                <span class="timeline-time">${task.time}</span>
                                 <span class="timeline-title">${task.title}</span>
                                 <p class="timeline-desc">${task.desc}</p>
-                                ${hasRoute ? `
-                                    <p class="timeline-meta">
-                                        <b>Melhor via (normal):</b> ${bestViaName} — ${bestDist} km
-                                        ${currentDist ? `<br><b>Condições atuais:</b> ${currentViaName} — ${currentDist} km` : ''}
-                                    </p>` : ''}
+                                ${dest ? `<p class="timeline-meta"><b>Melhor via:</b> ${fastest.via} — ${fastest.dist} km ${fastest.tag ? '('+fastest.tag+')' : ''}</p>` : ''}
                             </div>
-                            ${hasRoute ? `<button class="btn ${isBlue ? 'btn-blue' : 'btn-amber'}" onclick="triggerRoute('${task.routeId}')">
-                                    <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="m3 11 19-9-9 19-2-8-8-2Z"/></svg>
-                                    Simular Rota
-                                </button>` : ''}
+                            ${task.destKey ? `<button class="btn btn-amber" onclick="triggerRoute('${task.destKey}')">
+                                <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="m3 11 19-9-9 19-2-8-8-2Z"/></svg>
+                                Simular
+                            </button>` : ''}
                         </div>
                     </div>`;
             }).join('');
 
             const summaryEl = document.getElementById('summaryList');
-            const grupos = [
-                { nome: 'DF-047 (normal)', vias: bcAeroportoVias.filter(v => v.grupo === 'df047') },
-                { nome: 'Eixo Monumental', vias: bcAeroportoVias.filter(v => v.grupo === 'eixo') },
-                { nome: 'Via L4 (normal)', vias: bcAeroportoVias.filter(v => v.grupo === 'l4') },
-                { nome: 'Chaves (normal)', vias: bcAeroportoVias.filter(v => v.grupo === 'chaves') },
-                { nome: 'Condições Atuais', vias: bcAeroportoVias.filter(v => v.grupo === 'atual') },
-            ];
-            summaryEl.innerHTML = grupos.map(g => {
-                const minDist = Math.min(...g.vias.map(v => v.dist));
-                const maxDist = Math.max(...g.vias.map(v => v.dist));
-                const best = g.vias.find(v => v.dist === minDist);
+            summaryEl.innerHTML = Object.keys(destinosData).map(key => {
+                const d = destinosData[key];
+                const dists = d.vias.map(v => v.dist);
+                const minDist = Math.min(...dists);
+                const best = d.vias.find(v => v.dist === minDist);
                 return `
-                    <div class="summary-row">
+                    <div class="summary-row" onclick="triggerRoute('${key}')">
                         <div>
-                            <div class="dest">${g.nome}</div>
-                            <div class="via">${g.vias.length} via(s) · Melhor: ${best.via.substring(0,40)}${best.via.length > 40 ? '...' : ''}</div>
+                            <div class="dest">${d.destination}</div>
+                            <div class="via">${d.vias.length} via(s) · Melhor: ${best.via.substring(0,45)}${best.via.length>45?'...':''}</div>
                         </div>
                         <div>
-                            <div class="time">${minDist}–${maxDist} km</div>
-                            <div class="dist">${g.vias.length} opções</div>
+                            <div class="time">${minDist} km</div>
+                            <div class="dist">${best.tag || best.cond}</div>
                         </div>
                     </div>`;
             }).join('');
@@ -1300,26 +1217,12 @@
             }).join('');
         }
 
-        function initSegments() {
-            const trafficEl = document.getElementById('trafficButtons');
-            trafficEl.innerHTML = ['normal', 'lento', 'intenso'].map(v =>
-                `<button class="seg-btn ${v === state.traffic ? 'active' : ''}" data-val="${v}" onclick="setTraffic('${v}')">${v}</button>`
-            ).join('');
-
-            const weatherEl = document.getElementById('weatherButtons');
-            weatherEl.innerHTML = ['sol', 'chuva'].map(v =>
-                `<button class="seg-btn ${v === state.weather ? 'active' : ''}" data-val="${v}" onclick="setWeather('${v}')">${v}</button>`
-            ).join('');
-        }
-
         function init() {
             initSegments();
+            initRouteSelect();
             renderAgenda();
-            renderScenarioPicker();
-            renderViaTable();
-            renderRoute();
+            renderAllRoute();
             renderChecklist();
-            document.getElementById('routeSelect') && (document.getElementById('routeSelect').value = state.routeId);
         }
 
         init();
