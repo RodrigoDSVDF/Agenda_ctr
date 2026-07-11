@@ -1,142 +1,1328 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BCB Operacional - Painel de Segurança e Logística</title>
-    <!-- Tailwind CSS para estilização premium -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts para tipografia executiva -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel de Antecipação de Rotas — Demo</title>
     <style>
+        :root {
+            --bg: #020617;
+            --panel: #0f172a;
+            --panel-2: #1e293b;
+            --border: #1e293b;
+            --border-soft: rgba(148, 163, 184, 0.15);
+            --amber: #f59e0b;
+            --amber-soft: rgba(245, 158, 11, 0.08);
+            --amber-border: rgba(245, 158, 11, 0.25);
+            --text: #f1f5f9;
+            --text-dim: #94a3b8;
+            --text-dimmer: #64748b;
+            --emerald: #34d399;
+            --red: #ef4444;
+            --blue: #60a5fa;
+            --blue-soft: rgba(96, 165, 250, 0.08);
+            --blue-border: rgba(96, 165, 250, 0.25);
+        }
+        * {
+            box-sizing: border-box;
+        }
+        html,
         body {
-            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
         }
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        @keyframes pulse-soft {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+        .app {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            min-height: 100vh;
         }
-        .pulse-light {
-            animation: pulse-soft 2s infinite;
+        @media (min-width: 900px) {
+            .app {
+                flex-direction: row;
+            }
+        }
+
+        .sidebar {
+            width: 100%;
+            background: var(--panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        @media (min-width: 900px) {
+            .sidebar {
+                width: 300px;
+            }
+        }
+        .sidebar-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .icon-badge {
+            padding: 8px;
+            background: var(--amber-soft);
+            border: 1px solid var(--amber-border);
+            border-radius: 10px;
+            display: flex;
+        }
+        .sidebar-header h1 {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            color: var(--amber);
+            margin: 0;
+        }
+        .sidebar-header p {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin: 2px 0 0;
+        }
+
+        .mode-switch {
+            margin: 12px 16px;
+            padding: 6px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+        }
+        .mode-btn {
+            padding: 8px 4px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            border: none;
+            background: transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .mode-btn.active {
+            background: var(--amber);
+            color: var(--bg);
+        }
+
+        .nav {
+            flex: 1;
+            padding: 8px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dim);
+            background: transparent;
+            border: none;
+            border-left: 3px solid transparent;
+            text-align: left;
+            cursor: pointer;
+        }
+        .nav-btn.active {
+            background: var(--amber-soft);
+            color: var(--amber);
+            border-left: 3px solid var(--amber);
+        }
+        .nav-btn:hover:not(.active) {
+            background: rgba(148, 163, 184, 0.06);
+            color: var(--text);
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--text-dimmer);
+            text-align: center;
+        }
+        .sidebar-footer .mono {
+            font-family: monospace;
+            font-size: 10px;
+            margin-top: 4px;
+        }
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        @media (min-width: 900px) {
+            .main {
+                padding: 32px;
+            }
+        }
+
+        .page-header {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        @media (min-width: 700px) {
+            .page-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+        .page-header h2 {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+        .page-header p {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin: 4px 0 0;
+            max-width: 60ch;
+        }
+
+        .date-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .info-banner {
+            padding: 14px 16px;
+            background: var(--amber-soft);
+            border: 1px solid var(--amber-border);
+            border-radius: 16px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #cbd5e1;
+        }
+        .info-banner b {
+            color: var(--amber);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 1000px) {
+            .grid.agenda-grid {
+                grid-template-columns: 1.7fr 1fr;
+            }
+            .grid.rotas-grid {
+                grid-template-columns: 1fr 1.6fr;
+            }
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            min-width: 0;
+        }
+        .card-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--amber);
+        }
+        .card-title .badge {
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--text-dim);
+            background: var(--bg);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 18px;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .timeline-item {
+            position: relative;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: -23px;
+            top: 6px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid #334155;
+            background: var(--bg);
+        }
+        .timeline-dot.active {
+            background: var(--amber);
+            border-color: var(--amber);
+        }
+        .timeline-dot.blue {
+            background: var(--blue);
+            border-color: var(--blue);
+        }
+        .timeline-card {
+            background: var(--bg);
+            border: 1px solid var(--border-soft);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .timeline-time {
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--amber);
+            background: var(--amber-soft);
+            padding: 2px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--amber-border);
+            margin-right: 8px;
+        }
+        .timeline-time.blue {
+            color: var(--blue);
+            background: var(--blue-soft);
+            border-color: var(--blue-border);
+        }
+        .timeline-title {
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .timeline-desc {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin: 6px 0 0;
+            line-height: 1.5;
+        }
+        .timeline-meta {
+            font-size: 11px;
+            color: var(--text-dimmer);
+            margin-top: 6px;
+        }
+        .timeline-meta b {
+            color: var(--text-dim);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-amber {
+            background: var(--amber);
+            color: var(--bg);
+        }
+        .btn-amber:hover {
+            background: #fbbf24;
+        }
+        .btn-blue {
+            background: var(--blue);
+            color: var(--bg);
+        }
+        .btn-blue:hover {
+            background: #93c5fd;
+        }
+        .btn-ghost {
+            background: var(--panel-2);
+            color: var(--amber);
+            border: 1px solid var(--border);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg);
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+        }
+        .summary-row .dest {
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .summary-row .via {
+            font-size: 10px;
+            color: var(--text-dimmer);
+        }
+        .summary-row .time {
+            font-family: monospace;
+            font-weight: 800;
+            color: var(--amber);
+            font-size: 12px;
+            text-align: right;
+        }
+        .summary-row .dist {
+            font-family: monospace;
+            font-size: 10px;
+            color: var(--text-dim);
+            text-align: right;
+        }
+
+        label.field-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        select,
+        input[type=range] {
+            width: 100%;
+        }
+        select {
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 12px;
+        }
+        .field {
+            margin-bottom: 18px;
+        }
+        .speed-box {
+            background: var(--bg);
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            padding: 14px;
+        }
+        .speed-box .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .speed-box .value {
+            font-family: monospace;
+            font-weight: 900;
+            color: var(--amber);
+            font-size: 14px;
+        }
+        input[type=range] {
+            -webkit-appearance: none;
+            height: 5px;
+            border-radius: 4px;
+            background: var(--panel-2);
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--amber);
+            cursor: pointer;
+        }
+
+        .segmented {
+            display: grid;
+            gap: 6px;
+        }
+        .segmented.cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .segmented.cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .seg-btn {
+            padding: 8px 4px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: capitalize;
+            background: var(--bg);
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+        .seg-btn.active {
+            background: var(--amber);
+            color: var(--bg);
+            border-color: var(--amber);
+        }
+
+        .via-choice {
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            text-align: left;
+            cursor: pointer;
+            color: var(--text);
+        }
+        .via-choice.active {
+            border-color: var(--amber);
+            background: var(--amber-soft);
+            color: var(--amber);
+        }
+        .via-choice .label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: block;
+        }
+        .via-choice .sub {
+            font-size: 9px;
+            color: var(--text-dimmer);
+            display: block;
+            margin-top: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .route-header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .route-header h4 {
+            font-size: 14px;
+            margin: 0;
+            font-weight: 800;
+        }
+        .route-header .sub {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+        .route-header .sub b {
+            color: var(--amber);
+            font-weight: 700;
+        }
+        .dist-chip {
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--emerald);
+            background: rgba(52, 211, 153, 0.08);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+            padding: 6px 10px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+        .map-box {
+            height: 260px;
+            background: var(--bg);
+            border: 1px solid var(--border-soft);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+        .map-box svg {
+            width: 100%;
+            height: 100%;
+        }
+        .map-overlay {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            border-radius: 12px;
+        }
+        .map-overlay .label {
+            font-size: 10px;
+            color: var(--text-dim);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .map-overlay .big {
+            font-family: monospace;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--amber);
+            margin: 2px 0;
+        }
+        .map-overlay .nominal {
+            font-size: 9px;
+            color: var(--text-dimmer);
+        }
+
+        .warning {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: var(--amber-soft);
+            border: 1px solid var(--amber-border);
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--amber);
+        }
+
+        .checklist-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-align: left;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .checklist-item .dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #475569;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .checklist-item.done .dot {
+            border-color: var(--emerald);
+            background: rgba(52, 211, 153, 0.15);
+        }
+        .checklist-item.done .dot::after {
+            content: '✓';
+            color: var(--emerald);
+            font-size: 11px;
+            font-weight: 900;
+        }
+        .checklist-item.done span.label {
+            color: var(--text-dim);
+            text-decoration: line-through;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        svg.icon {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+        }
+
+        .via-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+        .via-table th {
+            text-align: left;
+            color: var(--text-dimmer);
+            font-weight: 600;
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+        .via-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--border-soft);
+            color: var(--text-dim);
+        }
+        .via-table tr {
+            cursor: pointer;
+        }
+        .via-table tr:hover td {
+            background: var(--amber-soft);
+            color: var(--text);
+        }
+        .via-table tr.active-row td {
+            background: var(--amber-soft);
+            color: var(--amber);
+            font-weight: 700;
+        }
+        .via-table .dist-col {
+            font-family: monospace;
+            font-weight: 700;
+            color: var(--emerald);
+            text-align: right;
+        }
+        .via-table .cond-col {
+            font-size: 10px;
+            color: var(--text-dimmer);
+            text-align: right;
+            white-space: nowrap;
+        }
+        .tag {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+        .tag-fastest {
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--emerald);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+        .tag-normal {
+            background: rgba(245, 158, 11, 0.12);
+            color: var(--amber);
+            border: 1px solid var(--amber-border);
+        }
+        .tag-current {
+            background: rgba(96, 165, 250, 0.15);
+            color: var(--blue);
+            border: 1px solid var(--blue-border);
+        }
+
+        .scenario-picker {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .scenario-chip {
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+        .scenario-chip.active {
+            background: var(--blue-soft);
+            border-color: var(--blue-border);
+            color: var(--blue);
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col md:flex-row selection:bg-amber-500 selection:text-slate-900">
+<body>
+    <div class="app">
 
-    <!-- BARRA LATERAL DE NAVEGAÇÃO -->
-    <aside class="w-full md:w-80 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0">
-        <div class="p-6 border-b border-slate-800">
-            <div class="flex items-center gap-3">
-                <div class="p-2 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                    </svg>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="icon-badge">
+                    <svg class="icon" style="color:var(--amber); width:22px; height:22px;" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5l-8-3Z"/></svg>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg tracking-wider text-amber-400">BCB OPERACIONAL</h1>
-                    <p class="text-xs text-slate-400 uppercase tracking-wider">Logística & Escolta</p>
+                    <h1>PAINEL DE ROTAS</h1>
+                    <p>Antecipação de Cenários de Deslocamento</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Chaveador de Visualização -->
-        <div class="p-3 mx-4 my-3 bg-slate-950 border border-slate-850 rounded-xl space-y-1">
-            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider text-center">Foco do Painel</p>
-            <div class="grid grid-cols-2 gap-1 text-xs">
-                <button onclick="setInterfaceMode('presentation')" id="mode-presentation" class="py-1.5 rounded-lg font-semibold flex items-center justify-center gap-1 transition-all bg-amber-500 text-slate-950 font-bold">
-                    💻 Monitor
+            <div class="mode-switch">
+                <button class="mode-btn active" id="modePresentation" onclick="setMode('presentation')">Apresentação</button>
+                <button class="mode-btn" id="modeOperational" onclick="setMode('operational')">Operacional</button>
+            </div>
+
+            <nav class="nav">
+                <button class="nav-btn active" id="navAgenda" onclick="setTab('agenda')">
+                    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                    Agenda &amp; Hub da Sede
                 </button>
-                <button onclick="setInterfaceMode('operational')" id="mode-operational" class="py-1.5 rounded-lg font-semibold flex items-center justify-center gap-1 transition-all text-slate-400 hover:text-slate-200">
-                    📱 No Carro
+                <button class="nav-btn" id="navRotas" onclick="setTab('rotas')">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="m3 11 19-9-9 19-2-8-8-2Z"/></svg>
+                    Consola de Simulação de Rota
                 </button>
+                <button class="nav-btn" id="navChecklist" onclick="setTab('checklist')">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    Checklist de Preparação
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>Projeto de portfólio — dados reais de Brasília</p>
+                <p class="mono">DEMO-2026.07-ROTAS · BCB → SBBR</p>
             </div>
-        </div>
+        </aside>
 
-        <!-- Navegação entre Secções -->
-        <nav class="flex-1 px-4 py-2 space-y-1">
-            <button onclick="switchTab('agenda')" id="tab-btn-agenda" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all bg-amber-500/10 text-amber-400 border-l-4 border-amber-500">
-                📅 Agenda & Escala do Dia
-            </button>
-            <button onclick="switchTab('gps')" id="tab-btn-rotas" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
-                🧭 Consola GPS Dinâmica
-            </button>
-            <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
-                🔧 Lista de Verificação (Viatura)
-            </button>
-            <button onclick="switchTab('seguranca')" id="tab-btn-seguranca" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
-                🛡️ Varredura de Segurança
-            </button>
-        </nav>
+        <main class="main">
 
-        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
-            <p>Dispositivo Seguro de Bordo</p>
-            <p class="mt-1 font-mono text-[10px]">CÓD: BCB-2026.11-LIVE</p>
-        </div>
-    </aside>
-
-    <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
-    <main class="flex-1 flex flex-col min-w-0 bg-slate-950 p-6 md:p-8 overflow-y-auto">
-        
-        <!-- CABEÇALHO SUPERIOR (Relógio e Status) -->
-        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-900 pb-6 mb-6">
-            <div>
-                <h2 class="text-xs font-bold text-amber-500 uppercase tracking-widest">Painel Integrado de Apoio Governamental</h2>
-                <h3 class="text-2xl font-extrabold text-white mt-1">Presidência do Banco Central do Brasil</h3>
-            </div>
-            
-            <div class="flex items-center gap-6 bg-slate-900/60 p-3 rounded-xl border border-slate-800/60">
-                <!-- Relógio -->
-                <div class="text-right">
-                    <div class="text-white font-bold tracking-wider mono text-sm" id="live-clock">16:59:00</div>
-                    <div class="text-[9px] text-amber-400 uppercase tracking-widest font-semibold">Sábado, 11 Julho 2026</div>
+            <section id="tabAgenda">
+                <div class="page-header">
+                    <div>
+                        <h2>Painel de Logística e Antecipação</h2>
+                        <p>Trajetos do Banco Central do Brasil até o Aeroporto Internacional de Brasília, com dados reais de vias e distâncias.</p>
+                    </div>
+                    <div class="date-chip">
+                        <svg class="icon" style="color:var(--amber)" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                        11 de Julho de 2026
+                    </div>
                 </div>
-                <!-- Status -->
-                <div class="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-full border border-emerald-500/20">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Canal Ativo</span>
+
+                <div class="info-banner" id="infoBanner">
+                    <svg class="icon" style="color:var(--amber); margin-top:2px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v4M12 8h.01"/></svg>
+                    <div>
+                        <b>Banco Central do Brasil → Aeroporto Internacional de Brasília (SBBR)</b>
+                        Dados reais de distância e vias. Os marcadores [colchetes], {chaves} e texto simples representam diferentes cenários de trânsito e condições, conforme os dados fornecidos.
+                    </div>
                 </div>
-            </div>
-        </header>
 
-        <!-- BANNER INFORMATIVO -->
-        <div id="presentation-banner" class="mb-6 p-4 bg-amber-500/5 border border-amber-500/20 rounded-2xl flex items-start gap-3">
-            <div class="text-amber-500 mt-0.5">ℹ️</div>
-            <div class="text-xs text-slate-300 space-y-1">
-                <p class="font-bold text-amber-400">Ambiente de Simulação de Trânsito e Segurança de Brasília</p>
-                <p>Todos os percursos abaixo têm como ponto de controlo e partida o **Banco Central**. Os trajetos calculam de forma precisa o tempo ganho em deslocamentos livres com escolta militar a uma velocidade média de **70 km/h**.</p>
-            </div>
-        </div>
-
-        <!-- SECCÃO 1: AGENDA E COMPROMISSOS -->
-        <section id="section-agenda" class="space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
-                <!-- Cronograma Diário (Col 8) -->
-                <div class="lg:col-span-8 p-6 bg-slate-900 border border-slate-800 rounded-2xl space-y-4">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                        <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
-                            📋 Rotas & Escala Presidencial
-                        </h3>
-                        <span class="px-2 py-0.5 bg-slate-950 text-slate-400 text-xs rounded-md font-mono">
-                            Partidas do Banco Central
-                        </span>
+                <div class="grid agenda-grid">
+                    <div class="card">
+                        <div class="card-title">
+                            <span style="display:flex; align-items:center; gap:8px;">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M9 20H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4M22 22 12 12"/></svg>
+                                Escala de Deslocamentos do Dia
+                            </span>
+                            <span class="badge">Banco Central → Aeroporto</span>
+                        </div>
+                        <div class="timeline" id="agendaTimeline"></div>
                     </div>
 
-                    <!-- Lista de Compromissos da Agenda -->
-                    <div class="space-y-4 pt-2">
-                        
-                        <!-- Rota 1: Aeroporto -->
-                        <div class="p-4 bg-slate-950 border border-slate-850 rounded-xl hover:border-amber-500/30 transition-all flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                          <div class="space-y-1.5 flex-1">
-                            <div class="flex items-center gap-2">
-                              <span class="text-[10px] font-mono font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">08:00</span>
-                              <h4 class="text-sm font-bold text-slate-200">Extração tática ➔ Aeroporto de Brasília</h4>
+                    <div class="card">
+                        <div class="card-title" style="border:none; margin-bottom:12px;">
+                            <span style="display:flex; align-items:center; gap:8px; text-transform:uppercase;">
+                                <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg>
+                                Resumo de Vias por Cenário
+                            </span>
+                        </div>
+                        <div id="summaryList"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tabRotas" class="hidden">
+                <div class="page-header">
+                    <div>
+                        <h2>Consola de Simulação de Rota</h2>
+                        <p>Compare as diversas vias entre o Banco Central e o Aeroporto de Brasília e veja o impacto de trânsito e clima no tempo estimado.</p>
+                    </div>
+                </div>
+
+                <div class="grid rotas-grid">
+                    <div class="card">
+                        <div class="card-title" style="border:none;">
+                            <span style="display:flex; align-items:center; gap:8px;">
+                                <svg class="icon" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                                Definições do Trajeto
+                            </span>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label">Cenário de Trânsito:</label>
+                            <div class="scenario-picker" id="scenarioPicker"></div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label">Via Selecionada:</label>
+                            <div style="max-height:280px; overflow-y:auto; border:1px solid var(--border); border-radius:12px;">
+                                <table class="via-table" id="viaTable">
+                                    <thead>
+                                        <tr><th>Via</th><th>Dist.</th><th>Condição</th></tr>
+                                    </thead>
+                                    <tbody id="viaTableBody"></tbody>
+                                </table>
                             </div>
-                            <p class="text-xs text-slate-400">Via principal: ERW - Sul e DF-047 (12.2 km | Trânsito: 14 min | Escolta 70km/h: ~10.5 min)</p>
-                          </div>
-                          <div class="flex gap-2 shrink-0">
-                            <button onclick="loadGpsRoute('bcb_aeroporto')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg transition-all">Consola</button>
-                            <a href="https://www.google.com/maps/dir/Brazilian+Central+Bank,+SBS+Quadra+3+Bloco+B+-+Asa+Sul,+Bras%C3%ADlia+-+DF,+Brazil/Aeroporto+Internacional+de+Bras%C3%ADlia+Presidente+Juscelino+Kubitschek,+Lago+Sul,+Bras%C3%ADlia+-+Federal+District,+Brazil/data=!4m14!4m13!1m5!1m1!19sChIJwR2jxN46WpMRiFJUwhPz6RQ!2m2!1d-47.8855363!2d-15.803094399999999!1m5!1m1!19sChIJQyttu4IlWpMRUIfuMAnj674!2m2!1d-47.9193484!2d-15.870690499999998!3e0" target="_blank" class="px-3
+                        </div>
+
+                        <div class="field speed-box">
+                            <div class="row">
+                                <span class="field-label" style="margin:0;">Velocidade Média:</span>
+                                <span class="value" id="speedValue">60 km/h</span>
+                            </div>
+                            <input type="range" min="30" max="110" value="60" id="speedSlider" oninput="onSpeedChange(this.value)" />
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label">Condição de Trânsito:</label>
+                            <div class="segmented cols-3" id="trafficButtons"></div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label">Clima:</label>
+                            <div class="segmented cols-2" id="weatherButtons"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="route-header">
+                            <div>
+                                <h4 id="routeTitle"></h4>
+                                <p class="sub">Via ativa: <b id="viaActiveName"></b></p>
+                            </div>
+                            <span class="dist-chip" id="distChip"></span>
+                        </div>
+
+                        <div class="map-box">
+                            <svg viewBox="0 0 600 300" id="mapSvg">
+                                <path id="routePath" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="6 4" />
+                                <circle cx="280" cy="170" r="8" fill="#10b981" />
+                                <text x="265" y="152" fill="#94a3b8" font-size="10" font-weight="bold">Banco Central (Origem)</text>
+                                <circle cx="480" cy="60" r="8" fill="#ef4444" />
+                                <text id="destLabel" x="430" y="48" fill="#f59e0b" font-size="10" font-weight="bold"></text>
+                            </svg>
+                            <div class="map-overlay">
+                                <div class="label">Tempo Estimado Ajustado</div>
+                                <div class="big" id="adjustedTime"></div>
+                                <div class="nominal" id="nominalTime"></div>
+                            </div>
+                        </div>
+
+                        <div class="warning hidden" id="warningBox">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            Condições atuais aumentam o tempo estimado — considere rota alternativa.
+                        </div>
+
+                        <div style="margin-top:16px; padding:12px; background:var(--bg); border-radius:12px; border:1px solid var(--border-soft);">
+                            <p style="font-size:11px; color:var(--text-dimmer); margin:0 0 8px; text-transform:uppercase; font-weight:700;">Outras Vias Disponíveis (consulta rápida)</p>
+                            <div id="otherViasList" style="font-size:10px; color:var(--text-dim); line-height:1.6;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tabChecklist" class="hidden">
+                <div class="page-header">
+                    <div>
+                        <h2>Checklist de Preparação</h2>
+                        <p>Etapas de verificação antes de iniciar os deslocamentos do dia.</p>
+                    </div>
+                </div>
+                <div class="card" style="max-width: 640px;">
+                    <div id="checklistBox"></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // -------------------------------------------------------------------
+        // DADOS REAIS: Banco Central → Aeroporto Internacional de Brasília
+        // Marcadores originais: [...] = trânsito normal / rápido
+        //                      {...} = trânsito normal (chaves)
+        //                      texto simples = condições atuais do trânsito
+        // -------------------------------------------------------------------
+        const bcAeroportoVias = [
+            // Grupo: DF-047 (colchetes — trânsito normal/rápido)
+            { via: 'DF-047 e Eixo Rodoviário de Brasília', dist: 12.5, cond: 'normal',
+                tag: 'Trajeto mais rápido, trânsito normal', grupo: 'df047', path: 'M 280,170 C 320,140 400,90 480,60' },
+            { via: 'DF-047 e ERL – Sul', dist: 12.4, cond: 'normal', tag: '', grupo: 'df047', path: 'M 280,170 C 310,145 390,95 480,60' },
+            { via: 'DF-047 e ERW – Sul', dist: 13.0, cond: 'normal', tag: '', grupo: 'df047', path: 'M 280,170 C 330,150 410,100 480,60' },
+
+            // Grupo: Eixo Monumental (colchete — trânsito fluindo mais que o normal)
+            { via: 'Eixo Monumental / Via S1', dist: 3.3, cond: 'fluido', tag: 'Trânsito fluindo mais que o normal',
+                grupo: 'eixo', path: 'M 280,170 Q 360,120 480,60' },
+            { via: 'Eixo Rodoviário de Brasília e Eixo Monumental / Via S1', dist: 13.7, cond: 'normal', tag: '',
+                grupo: 'eixo', path: 'M 280,170 Q 340,130 480,60' },
+
+            // Grupo: Via L4 (colchetes — trânsito normal)
+            { via: 'Estr. Parque das Nações (Via L4) / Via L4 South', dist: 5.6, cond: 'normal',
+                tag: 'Trajeto mais rápido, trânsito normal', grupo: 'l4', path: 'M 280,170 C 350,200 430,120 480,60' },
+            { via: 'Estr. Parque das Nações (Via L4) / Via L4 South', dist: 4.8, cond: 'normal', tag: '', grupo: 'l4',
+                path: 'M 280,170 C 340,195 420,115 480,60' },
+            { via: 'SES 801 e Estr. Parque das Nações (Via L4) / Via L4 South', dist: 5.0, cond: 'normal', tag: '',
+                grupo: 'l4', path: 'M 280,170 C 345,190 425,110 480,60' },
+            { via: 'Via S3 e Estr. Parque das Nações (Via L4) / Via L4 South', dist: 6.2, cond: 'normal', tag: '',
+                grupo: 'l4', path: 'M 280,170 C 355,205 430,125 480,60' },
+
+            // Grupo: Chaves (trânsito normal)
+            { via: 'Via S3', dist: 4.0, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', grupo: 'chaves',
+                path: 'M 280,170 Q 370,180 480,60' },
+            { via: 'Via L2 Sul', dist: 5.7, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', grupo: 'chaves',
+                path: 'M 280,170 Q 380,170 480,60' },
+            { via: 'ERL – Sul', dist: 6.7, cond: 'normal', tag: '', grupo: 'chaves', path: 'M 280,170 Q 390,160 480,60' },
+            { via: 'ERW – Sul', dist: 6.9, cond: 'normal', tag: '', grupo: 'chaves', path: 'M 280,170 Q 395,155 480,60' },
+
+            // Grupo: Condições atuais (texto simples)
+            { via: 'DF-047 e Eixo Rodoviário de Brasília', dist: 15.4, cond: 'atual',
+                tag: 'Trajeto mais rápido agora nas condições atuais', grupo: 'atual', path: 'M 280,170 C 300,130 380,80 480,60' },
+            { via: 'DF-047, Eixo Rodoviário de Brasília e Eixo Monumental', dist: 15.6, cond: 'atual', tag: '',
+                grupo: 'atual', path: 'M 280,170 C 310,125 390,75 480,60' },
+            { via: 'Estr. Parque das Nações (Via L4)', dist: 17.4, cond: 'atual', tag: '', grupo: 'atual',
+                path: 'M 280,170 C 360,210 440,130 480,60' },
+        ];
+
+        const routesDatabase = {
+            bc_aeroporto: {
+                title: 'Banco Central ➔ Aeroporto Internacional de Brasília',
+                destination: 'Aeroporto Internacional de Brasília (SBBR)',
+                vias: bcAeroportoVias,
+            },
+        };
+
+        const agendaTimeline = [
+            { time: '08:00', title: 'Verificação de Protocolo', desc: 'Checklist do veículo e conferência de rota do dia.',
+                routeId: null },
+            { time: '09:30', title: 'Deslocamento Principal',
+                desc: 'Banco Central ➔ Aeroporto Internacional de Brasília. Verificar condições de trânsito e escolher via.',
+                routeId: 'bc_aeroporto' },
+            { time: '11:00', title: 'Previsão de Chegada', desc: 'ETA no Aeroporto conforme via e condições selecionadas.',
+                routeId: 'bc_aeroporto' },
+            { time: '14:00', title: 'Retorno (Logística Reversa)',
+                desc: 'Aeroporto ➔ Banco Central. Utilizar mesma via ou rota alternativa conforme trânsito.',
+                routeId: 'bc_aeroporto' },
+        ];
+
+        const checklistItems = {
+            veiculo: 'Inspeção do veículo',
+            combustivel: 'Nível de combustível',
+            comunicacao: 'Equipamento de comunicação',
+            documentacao: 'Documentação da viagem',
+            rotaConfirmada: 'Rota do dia confirmada',
+            transitoVerificado: 'Condições de trânsito verificadas (DF-047, Eixo, L4)',
+            climaVerificado: 'Previsão do tempo consultada',
+        };
+
+        // -------------------------------------------------------------------
+        // ESTADO
+        // -------------------------------------------------------------------
+        let state = {
+            tab: 'agenda',
+            mode: 'presentation',
+            routeId: 'bc_aeroporto',
+            viaIndex: 0,
+            scenario: 'todos',
+            speed: 60,
+            traffic: 'normal',
+            weather: 'sol',
+            checklist: {},
+        };
+
+        function setTab(tab) {
+            state.tab = tab;
+            document.getElementById('tabAgenda').classList.toggle('hidden', tab !== 'agenda');
+            document.getElementById('tabRotas').classList.toggle('hidden', tab !== 'rotas');
+            document.getElementById('tabChecklist').classList.toggle('hidden', tab !== 'checklist');
+            document.getElementById('navAgenda').classList.toggle('active', tab === 'agenda');
+            document.getElementById('navRotas').classList.toggle('active', tab === 'rotas');
+            document.getElementById('navChecklist').classList.toggle('active', tab === 'checklist');
+        }
+
+        function setMode(mode) {
+            state.mode = mode;
+            document.getElementById('modePresentation').classList.toggle('active', mode === 'presentation');
+            document.getElementById('modeOperational').classList.toggle('active', mode === 'operational');
+            document.getElementById('infoBanner').classList.toggle('hidden', mode !== 'presentation');
+        }
+
+        function triggerRoute(routeId) {
+            state.routeId = routeId;
+            state.viaIndex = 0;
+            state.scenario = 'todos';
+            setTab('rotas');
+            renderRoute();
+            renderScenarioPicker();
+            renderViaTable();
+        }
+
+        function onRouteChange() {
+            state.viaIndex = 0;
+            renderRoute();
+            renderViaTable();
+        }
+
+        function onSpeedChange(val) {
+            state.speed = parseInt(val);
+            document.getElementById('speedValue').textContent = state.speed + ' km/h';
+            renderRoute();
+        }
+
+        function setScenario(scenario) {
+            state.scenario = scenario;
+            state.viaIndex = 0;
+            renderScenarioPicker();
+            renderViaTable();
+            renderRoute();
+        }
+
+        function selectVia(index) {
+            state.viaIndex = index;
+            renderViaTable();
+            renderRoute();
+        }
+
+        function setTraffic(val) {
+            state.traffic = val;
+            document.querySelectorAll('#trafficButtons .seg-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.val === val);
+            });
+            renderRoute();
+        }
+
+        function setWeather(val) {
+            state.weather = val;
+            document.querySelectorAll('#weatherButtons .seg-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.val === val);
+            });
+            renderRoute();
+        }
+
+        function toggleChecklist(key) {
+            state.checklist[key] = !state.checklist[key];
+            renderChecklist();
+        }
+
+        function getFilteredVias() {
+            const allVias = routesDatabase['bc_aeroporto'].vias;
+            if (state.scenario === 'todos') return allVias;
+            return allVias.filter(v => v.grupo === state.scenario);
+        }
+
+        function getActiveVia() {
+            const filtered = getFilteredVias();
+            if (filtered.length === 0) return routesDatabase['bc_aeroporto'].vias[0];
+            if (state.viaIndex >= filtered.length) state.viaIndex = 0;
+            return filtered[state.viaIndex];
+        }
+
+        function calcTime() {
+            const via = getActiveVia();
+            const distance = via.dist;
+            const timeInHours = distance / state.speed;
+            const totalSeconds = Math.round(timeInHours * 3600);
+
+            let trafficMultiplier = 1.0;
+            if (state.traffic === 'lento') trafficMultiplier = 1.4;
+            if (state.traffic === 'intenso') trafficMultiplier = 1.9;
+
+            let weatherDelay = 0;
+            if (state.weather === 'chuva') weatherDelay = 120;
+
+            const adjustedSeconds = Math.round(totalSeconds * trafficMultiplier + weatherDelay);
+
+            return {
+                nominalMins: Math.floor(totalSeconds / 60),
+                nominalSecs: totalSeconds % 60,
+                adjustedMins: Math.floor(adjustedSeconds / 60),
+                adjustedSecs: adjustedSeconds % 60,
+                distance,
+                viaName: via.via,
+                path: via.path,
+                cond: via.cond,
+                tag: via.tag,
+            };
+        }
+
+        function renderRoute() {
+            const routeData = routesDatabase[state.routeId];
+            const t = calcTime();
+            const via = getActiveVia();
+
+            document.getElementById('routeTitle').textContent = routeData.title;
+            document.getElementById('viaActiveName').textContent = t.viaName + (t.tag ? ' (' + t.tag + ')' : '');
+            document.getElementById('distChip').textContent = t.distance + ' km total';
+            document.getElementById('routePath').setAttribute('d', t.path);
+            document.getElementById('destLabel').textContent = routeData.destination;
+            document.getElementById('adjustedTime').textContent = t.adjustedMins + 'm ' + t.adjustedSecs + 's';
+            document.getElementById('nominalTime').textContent = 'Tempo nominal sem trânsito: ' + t.nominalMins + 'm ' +
+                t.nominalSecs + 's';
+
+            const warn = state.traffic === 'intenso' || state.weather === 'chuva';
+            document.getElementById('warningBox').classList.toggle('hidden', !warn);
+
+            const allVias = routesDatabase['bc_aeroporto'].vias;
+            const otherVias = allVias.filter((v, i) => i !== allVias.indexOf(via)).slice(0, 8);
+            document.getElementById('otherViasList').innerHTML = otherVias.map(v => {
+                const tagHtml = v.tag ?
+                    '<span class="tag ' + (v.cond === 'atual' ? 'tag-current' : v.cond === 'fluido' ? 'tag-fastest' :
+                        'tag-normal') + '">' + v.tag.replace('Trajeto mais rápido, ', '').replace(
+                        'Trajeto mais rápido agora nas ', '') + '</span>' :
+                    '';
+                return '• ' + v.via + ' — <b>' + v.dist + ' km</b> (' + v.cond + ')' + tagHtml;
+            }).join('<br>');
+        }
+
+        function renderViaTable() {
+            const filtered = getFilteredVias();
+            const tbody = document.getElementById('viaTableBody');
+            tbody.innerHTML = filtered.map((v, i) => {
+                const activeClass = i === state.viaIndex ? ' active-row' : '';
+                const tagHtml = v.tag ?
+                    '<span class="tag ' + (v.cond === 'atual' ? 'tag-current' : v.cond === 'fluido' ?
+                        'tag-fastest' : 'tag-normal') + '">' + v.tag.replace('Trajeto mais rápido, ', '')
+                    .replace('Trajeto mais rápido agora nas ', '') + '</span>' :
+                    '';
+                return `
+                    <tr class="${activeClass}" onclick="selectVia(${i})">
+                        <td>${v.via} ${tagHtml}</td>
+                        <td class="dist-col">${v.dist} km</td>
+                        <td class="cond-col">${v.cond}</td>
+                    </tr>`;
+            }).join('');
+        }
+
+        function renderScenarioPicker() {
+            const picker = document.getElementById('scenarioPicker');
+            const scenarios = [
+                { key: 'todos', label: 'Todas as Vias' },
+                { key: 'df047', label: 'DF-047' },
+                { key: 'eixo', label: 'Eixo Monumental' },
+                { key: 'l4', label: 'Via L4' },
+                { key: 'chaves', label: 'Chaves' },
+                { key: 'atual', label: 'Condições Atuais' },
+            ];
+            picker.innerHTML = scenarios.map(s => `
+                <button class="scenario-chip ${state.scenario === s.key ? 'active' : ''}" onclick="setScenario('${s.key}')">${s.label}</button>
+            `).join('');
+        }
+
+        function renderAgenda() {
+            const timelineEl = document.getElementById('agendaTimeline');
+            const routeData = routesDatabase['bc_aeroporto'];
+            timelineEl.innerHTML = agendaTimeline.map((task, idx) => {
+                const hasRoute = !!task.routeId;
+                const isBlue = idx >= 2;
+                const fastestVia = routeData.vias.find(v => v.tag.includes('mais rápido'));
+                const currentVia = routeData.vias.find(v => v.cond === 'atual' && v.tag.includes('mais rápido'));
+                const bestDist = fastestVia ? fastestVia.dist : routeData.vias[0].dist;
+                const bestViaName = fastestVia ? fastestVia.via : routeData.vias[0].via;
+                const currentDist = currentVia ? currentVia.dist : null;
+                const currentViaName = currentVia ? currentVia.via : null;
+                return `
+                    <div class="timeline-item">
+                        <span class="timeline-dot ${hasRoute ? (isBlue ? 'blue' : 'active') : ''}"></span>
+                        <div class="timeline-card">
+                            <div style="flex:1; min-width:200px;">
+                                <span class="timeline-time ${isBlue ? 'blue' : ''}">${task.time}</span>
+                                <span class="timeline-title">${task.title}</span>
+                                <p class="timeline-desc">${task.desc}</p>
+                                ${hasRoute ? `
+                                    <p class="timeline-meta">
+                                        <b>Melhor via (normal):</b> ${bestViaName} — ${bestDist} km
+                                        ${currentDist ? `<br><b>Condições atuais:</b> ${currentViaName} — ${currentDist} km` : ''}
+                                    </p>` : ''}
+                            </div>
+                            ${hasRoute ? `<button class="btn ${isBlue ? 'btn-blue' : 'btn-amber'}" onclick="triggerRoute('${task.routeId}')">
+                                    <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="m3 11 19-9-9 19-2-8-8-2Z"/></svg>
+                                    Simular Rota
+                                </button>` : ''}
+                        </div>
+                    </div>`;
+            }).join('');
+
+            const summaryEl = document.getElementById('summaryList');
+            const grupos = [
+                { nome: 'DF-047 (normal)', vias: bcAeroportoVias.filter(v => v.grupo === 'df047') },
+                { nome: 'Eixo Monumental', vias: bcAeroportoVias.filter(v => v.grupo === 'eixo') },
+                { nome: 'Via L4 (normal)', vias: bcAeroportoVias.filter(v => v.grupo === 'l4') },
+                { nome: 'Chaves (normal)', vias: bcAeroportoVias.filter(v => v.grupo === 'chaves') },
+                { nome: 'Condições Atuais', vias: bcAeroportoVias.filter(v => v.grupo === 'atual') },
+            ];
+            summaryEl.innerHTML = grupos.map(g => {
+                const minDist = Math.min(...g.vias.map(v => v.dist));
+                const maxDist = Math.max(...g.vias.map(v => v.dist));
+                const best = g.vias.find(v => v.dist === minDist);
+                return `
+                    <div class="summary-row">
+                        <div>
+                            <div class="dest">${g.nome}</div>
+                            <div class="via">${g.vias.length} via(s) · Melhor: ${best.via.substring(0,40)}${best.via.length > 40 ? '...' : ''}</div>
+                        </div>
+                        <div>
+                            <div class="time">${minDist}–${maxDist} km</div>
+                            <div class="dist">${g.vias.length} opções</div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function renderChecklist() {
+            const el = document.getElementById('checklistBox');
+            el.innerHTML = Object.keys(checklistItems).map(key => {
+                const done = !!state.checklist[key];
+                return `
+                    <button class="checklist-item ${done ? 'done' : ''}" onclick="toggleChecklist('${key}')">
+                        <span class="dot"></span>
+                        <span class="label">${checklistItems[key]}</span>
+                    </button>`;
+            }).join('');
+        }
+
+        function initSegments() {
+            const trafficEl = document.getElementById('trafficButtons');
+            trafficEl.innerHTML = ['normal', 'lento', 'intenso'].map(v =>
+                `<button class="seg-btn ${v === state.traffic ? 'active' : ''}" data-val="${v}" onclick="setTraffic('${v}')">${v}</button>`
+            ).join('');
+
+            const weatherEl = document.getElementById('weatherButtons');
+            weatherEl.innerHTML = ['sol', 'chuva'].map(v =>
+                `<button class="seg-btn ${v === state.weather ? 'active' : ''}" data-val="${v}" onclick="setWeather('${v}')">${v}</button>`
+            ).join('');
+        }
+
+        function init() {
+            initSegments();
+            renderAgenda();
+            renderScenarioPicker();
+            renderViaTable();
+            renderRoute();
+            renderChecklist();
+            document.getElementById('routeSelect') && (document.getElementById('routeSelect').value = state.routeId);
+        }
+
+        init();
+    </script>
+</body>
+</html>
