@@ -1,552 +1,142 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Shield, 
-  MapPin, 
-  Clock, 
-  Calendar, 
-  Wrench, 
-  UserCheck, 
-  PhoneCall, 
-  AlertTriangle, 
-  Compass, 
-  CloudRain, 
-  CheckCircle, 
-  Layers, 
-  Cpu, 
-  Radio, 
-  Eye, 
-  Activity, 
-  Navigation, 
-  Globe, 
-  Sliders, 
-  Map, 
-  BellRing,
-  Gauge,
-  Monitor,
-  Smartphone,
-  Info,
-  ExternalLink
-} from 'lucide-react';
-
-export default function App() {
-  // Estado de navegação principal da aplicação
-  const [activeTab, setActiveTab] = useState('agenda');
-  
-  // Duplo Modo de Visualização: 'presentation' (Para Entrevista) ou 'operational' (Para Conduzir no Telemóvel)
-  const [interfaceMode, setInterfaceMode] = useState('presentation');
-
-  // Configurações do simulador de navegação avançada
-  const [selectedRouteId, setSelectedRouteId] = useState('bcb_fazenda');
-  const [useAlternativeRoute, setUseAlternativeRoute] = useState(false);
-  const [mapStyle, setMapStyle] = useState('traffic'); 
-  const [weatherCondition, setWeatherCondition] = useState('sol');
-  const [trafficCondition, setTrafficCondition] = useState('normal'); 
-
-  // Ajustes Dinâmicos de Velocidade (Padrão 70 km/h)
-  const [targetSpeed, setTargetSpeed] = useState(70);
-
-  // Estados de telemetria e Geofencing
-  const [carSpeed, setCarSpeed] = useState(70);
-  const [distanceToDestination, setDistanceToDestination] = useState(3.3);
-  const [geofenceStatus, setGeofenceStatus] = useState('ZONA_APROXIMACAO');
-
-  // Estados do checklist de manutenção preventiva
-  const [checklist, setChecklist] = useState({
-    vidros: false,
-    pneus: false,
-    fluidos: false,
-    comunicacao: false,
-    blindagem: false,
-    combustivel: false,
-    rastreamento: false,
-  });
-
-  // Estados do botão de pânico de emergência
-  const [panicActive, setPanicActive] = useState(false);
-  const [panicCountdown, setPanicCountdown] = useState(5);
-  const [alarmPlaying, setAlarmPlaying] = useState(false);
-
-  // Estados da integração CIOP (ciop.brasilia.df.gov.br)
-  const [ciopLayer, setCiopLayer] = useState('transito'); 
-  const [selectedCamera, setSelectedCamera] = useState('Esplanada - Bloco B');
-  const [feedLogs, setFeedLogs] = useState([
-    { id: 1, time: '14:02', type: 'Alerta', text: 'Fluxo intenso na Via S1 próximo ao Ministério da Fazenda.' },
-    { id: 2, time: '13:45', type: 'Info', text: 'Eixão Sul fluindo normalmente nos dois sentidos. Velocidade de 70km/h.' },
-    { id: 3, time: '13:15', type: 'Clima', text: 'Chuva fraca isolada na região da L4 Sul. Atenção ao asfalto.' },
-    { id: 4, time: '12:30', type: 'Suporte', text: 'Garagem do Banco Central operacional sem restrições de acesso.' }
-  ]);
-
-  // Escala Oficial Exata e Rotas da Agenda do Presidente do BACEN
-  const [selectedDate, setSelectedDate] = useState('2026-07-11');
-  
-  // Definição estrita das rotas da agenda presidencial partindo do Banco Central com links oficiais
-  const routesDatabase = {
-    bcb_aeroporto: {
-      title: 'Banco Central ➔ Aeroporto de Brasília',
-      primary: { via: 'ERW - Sul e DF-047', dist: 12.2, path: 'M 100,240 C 120,210 200,160 300,120 C 350,100 420,80 480,60' },
-      alternative: { via: 'Via L2 Sul e EPDB (Lago Sul)', dist: 13.5, path: 'M 100,240 C 150,220 300,200 420,170 C 470,140 490,90 480,60' },
-      mapLink: 'https://www.google.com/maps/dir/Brazilian+Central+Bank,+SBS+Quadra+3+Bloco+B+-+Asa+Sul,+Bras%C3%ADlia+-+DF,+Brazil/Aeroporto+Internacional+de+Bras%C3%ADlia+Presidente+Juscelino+Kubitschek,+Lago+Sul,+Bras%C3%ADlia+-+Federal+District,+Brazil/data=!4m14!4m13!1m5!1m1!19sChIJwR2jxN46WpMRiFJUwhPz6RQ!2m2!1d-47.8855363!2d-15.803094399999999!1m5!1m1!19sChIJQyttu4IlWpMRUIfuMAnj674!2m2!1d-47.9193484!2d-15.870690499999998!3e0?entry=gemini&utm_source=gemini&utm_campaign=gem-default'
-    },
-    bcb_planalto: {
-      title: 'Banco Central ➔ Palácio do Planalto',
-      primary: { via: 'Eixo Monumental', dist: 3.7, path: 'M 480,60 Q 455,75 430,90' },
-      alternative: { via: 'Via L2 Sul e Via S2/S3', dist: 4.2, path: 'M 480,60 C 490,40 450,40 430,90' },
-      mapLink: 'https://www.google.com/maps/dir/Brazilian+Central+Bank,+SBS+Quadra+3+Bloco+B+-+Asa+Sul,+Bras%C3%ADlia+-+DF,+Brazil/Pal%C3%A1cio+do+Planalto,+Pra%C3%A7a+dos+Tr%C3%AAs+Poderes,+Bras%C3%ADlia+-+Federal+District,+Brazil/data=!4m14!4m13!1m5!1m1!19sChIJwR2jxN46WpMRiFJUwhPz6RQ!2m2!1d-47.8855363!2d-15.803094399999999!1m5!1m1!19sChIJ0-cd45owWpMREMqBWW9axMc!2m2!1d-47.8607689!2d-15.799048899999999!3e0?entry=gemini&utm_source=gemini&utm_campaign=gem-default'
-    },
-    bcb_congresso: {
-      title: 'Banco Central ➔ Congresso Nacional',
-      primary: { via: 'Eixo Monumental / Via S1', dist: 3.5, path: 'M 430,90 Q 330,120 220,160' },
-      alternative: { via: 'Vias S2 e S3 Internas', dist: 4.0, path: 'M 430,90 Q 320,140 220,160' },
-      mapLink: 'https://www.google.com/maps/dir/Brazilian+Central+Bank,+SBS+Quadra+3+Bloco+B+-+Asa+Sul,+Bras%C3%ADlia+-+DF,+Brazil/Congresso+Nacional,+Pal%C3%A1cio+do+Congresso+Nacional,+Pra%C3%A7a+dos+3+Poderes,+Bras%C3%ADlia+-+DF,+Brasil/data=!4m14!4m13!1m5!1m1!19sChIJwR2jxN46WpMRiFJUwhPz6RQ!2m2!1d-47.8855363!2d-15.803094399999999!1m5!1m1!19sChIJuXVjvzg7WpMRP5_RrPrKtgU!2m2!1d-47.8641629!2d-15.7997119!3e0?entry=gemini&utm_source=gemini&utm_campaign=gem-default'
-    },
-    bcb_fazenda: {
-      title: 'Banco Central ➔ Ministério da Fazenda',
-      primary: { via: 'Eixo Monumental / Via S1', dist: 3.3, path: 'M 220,160 Q 300,135 380,110' },
-      alternative: { via: 'Via L2 Sul e alças do SAS', dist: 3.9, path: 'M 220,160 C 240,140 300,140 380,110' },
-      mapLink: 'https://www.google.com/maps/dir/Brazilian+Central+Bank,+SBS+Quadra+3+Bloco+B+-+Asa+Sul,+Bras%C3%ADlia+-+DF,+Brazil/Ministry+of+Economy,+Bloco+P,+Eixo+Monumental+-+Plano+Piloto,+Bras%C3%ADlia+-+DF,+Brazil/data=!4m14!4m13!1m5!1m1!19sChIJwR2jxN46WpMRiFJUwhPz6RQ!2m2!1d-47.8855363!2d-15.803094399999999!1m5!1m1!19sChIJzRIpgz07WpMR5B0-c490OBE!2m2!1d-47.869913399999994!2d-15.7963952!3e0?entry=gemini&utm_source=gemini&utm_campaign=gem-default'
-    },
-    bcb_piantas: {
-      title: 'Banco Central ➔ Piantas Bistrô',
-      primary: { via: 'Via L2 Sul', dist: 5.7, path: 'M 380,110 Q 440,140 490,190' },
-      alternative: { via: 'Eixão Sul e Tesourinha 112S', dist: 6.1, path: 'M 380,110 C 350,120 400,160 490,190' },
-      mapLink: 'https://www.google.com/maps/dir/Brazilian+Central+Bank,+SBS+Quadra+3+Bloco+B+-+Asa+Sul,+Bras%C3%ADlia+-+DF,+Brazil/Piantas+Bistr%C3%B4,+SHCS+CLS+412+BL+D+34+-+Plano+Piloto,+Bras%C3%ADlia+-+DF,+Brasil/data=!4m14!4m13!1m5!1m1!19sChIJwR2jxN46WpMRiFJUwhPz6RQ!2m2!1d-47.8855363!2d-15.803094399999999!1m5!1m1!19sChIJq6qaMk4lWpMRI-aLsrHlyOo!2m2!1d-47.911276099999995!2d-15.8311209!3e0?entry=gemini&utm_source=gemini&utm_campaign=gem-default'
-    },
-    bcb_rubaiyat: {
-      title: 'Banco Central ➔ Rubaiyat Brasília',
-      primary: { via: 'Via L4 Sul (Avenida das Nações)', dist: 5.6, path: 'M 490,190 C 400,210 250,230 100,240' },
-      alternative: { via: 'Via L2 Sul e Acesso Ponte Costa e Silva', dist: 6.2, path: 'M 490,190 C 350,220 200,250 100,240' },
-      mapLink: 'https://www.google.com/maps/dir/Brazilian+Central+Bank,+SBS+Quadra+3+Bloco+B+-+Asa+Sul,+Bras%C3%ADlia+-+DF,+Brazil/Rubaiyat+Bras%C3%ADlia,+1+Esportivo+Sul,+Setor+de+Clubes+Esportivos+Sul,+Bras%C3%ADlia+-+DF,+Brasil/data=!4m14!4m13!1m5!1m1!19sChIJwR2jxN46WpMRiFJUwhPz6RQ!2m2!1d-47.8855363!2d-15.803094399999999!1m5!1m1!19sChIJ_641dSUlWpMRq00FULrVGa4!2m2!1d-47.8926672!2d-15.833581599999999!3e0?entry=gemini&utm_source=gemini&utm_campaign=gem-default'
-    }
-  };
-
-  // Cronograma diário sequencial estruturado partindo do Hub do Banco Central
-  const agendaTimeline = [
-    { time: '07:30', title: 'Abertura de Protocolo', desc: 'Checklist mecânico completo e ativação do terminal na garagem do Banco Central.', routeId: null },
-    { time: '08:45', title: 'Despacho Executivo', desc: 'Deslocação oficial Banco Central ➔ Palácio do Planalto para audiência governamental.', routeId: 'bcb_planalto' },
-    { time: '10:30', title: 'Sessão Legislativa', desc: 'Deslocação oficial Banco Central ➔ Congresso Nacional (Acompanhamento técnico).', routeId: 'bcb_congresso' },
-    { time: '12:15', title: 'Almoço Técnico', desc: 'Deslocação oficial Banco Central ➔ Restaurante Piantas Bistrô (Logística de doca privativa na Asa Sul).', routeId: 'bcb_piantas' },
-    { time: '14:30', title: 'Despacho de Orçamento', desc: 'Deslocação oficial Banco Central ➔ Ministério da Fazenda (Esplanada dos Ministérios).', routeId: 'bcb_fazenda' },
-    { time: '18:00', title: 'Jantar de Confraternização', desc: 'Deslocação oficial Banco Central ➔ Restaurante Rubaiyat Brasília (Setor de Clubes Sul).', routeId: 'bcb_rubaiyat' },
-    { time: '21:00', title: 'Extração e Retorno', desc: 'Deslocação final de segurança Banco Central ➔ Aeroporto Internacional de Brasília.', routeId: 'bcb_aeroporto' }
-  ];
-
-  // Simulação de velocidade e aproximação
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCarSpeed(prev => {
-        const variance = Math.floor(Math.random() * 5) - 2; 
-        const nextSpeed = targetSpeed + variance;
-        return nextSpeed;
-      });
-
-      setDistanceToDestination(prev => {
-        if (prev <= 0.1) {
-          const activeRouteInfo = useAlternativeRoute 
-            ? routesDatabase[selectedRouteId].alternative 
-            : routesDatabase[selectedRouteId].primary;
-          return activeRouteInfo.dist; 
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCB Operacional - Painel de Segurança e Logística</title>
+    <!-- Tailwind CSS para estilização premium -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts para tipografia executiva -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
         }
-        return parseFloat((prev - 0.1).toFixed(1));
-      });
-    }, 2000);
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .pulse-light {
+            animation: pulse-soft 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col md:flex-row selection:bg-amber-500 selection:text-slate-900">
 
-    return () => clearInterval(timer);
-  }, [selectedRouteId, useAlternativeRoute, targetSpeed]);
-
-  // Alertas de Geofencing
-  useEffect(() => {
-    if (distanceToDestination > 3.0) {
-      setGeofenceStatus('ZONA_APROXIMACAO');
-    } else if (distanceToDestination <= 3.0 && distanceToDestination > 0.8) {
-      setGeofenceStatus('SEGURANCA_MAXIMA');
-    } else {
-      setGeofenceStatus('DOCA_AUTORIZADA');
-    }
-  }, [distanceToDestination]);
-
-  // Web Audio API para simulação de som tático
-  const playEmergencyBeep = () => {
-    if (!window.AudioContext && !window.webkitAudioContext) return;
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.linearRampToValueAtTime(440, ctx.currentTime + 0.4);
-    osc.frequency.linearRampToValueAtTime(880, ctx.currentTime + 0.8);
-    
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    
-    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.8);
-    
-    osc.start();
-    osc.stop(ctx.currentTime + 0.8);
-  };
-
-  useEffect(() => {
-    let interval;
-    if (panicActive && panicCountdown > 0) {
-      interval = setInterval(() => {
-        setPanicCountdown(prev => prev - 1);
-      }, 1000);
-    } else if (panicActive && panicCountdown === 0) {
-      setAlarmPlaying(true);
-      const audioInterval = setInterval(() => {
-        playEmergencyBeep();
-      }, 950);
-      return () => clearInterval(audioInterval);
-    }
-    return () => clearInterval(interval);
-  }, [panicActive, panicCountdown]);
-
-  // CÁLCULO DE CHEGADA (t = d / v)
-  const calculateExactTime = () => {
-    const routeData = routesDatabase[selectedRouteId];
-    if (!routeData) return {};
-
-    const targetRoute = useAlternativeRoute ? routeData.alternative : routeData.primary;
-    const distance = targetRoute.dist;
-    
-    const timeInHours = distance / targetSpeed;
-    const totalSeconds = Math.round(timeInHours * 3600);
-
-    let trafficMultiplier = 1.0;
-    if (trafficCondition === 'lento') trafficMultiplier = 1.4;
-    if (trafficCondition === 'intenso') trafficMultiplier = 1.9;
-
-    let weatherDelaySeconds = 0;
-    if (weatherCondition === 'chuva') weatherDelaySeconds = 120; 
-
-    const adjustedSeconds = Math.round((totalSeconds * trafficMultiplier) + weatherDelaySeconds);
-    
-    return {
-      nominalMins: Math.floor(totalSeconds / 60),
-      nominalSecs: totalSeconds % 60,
-      adjustedMins: Math.floor(adjustedSeconds / 60),
-      adjustedSecs: adjustedSeconds % 60,
-      distance: distance,
-      viaName: targetRoute.via,
-      mapLink: routeData.mapLink
-    };
-  };
-
-  const timeResults = calculateExactTime();
-
-  const resetPanic = () => {
-    setPanicActive(false);
-    setPanicCountdown(5);
-    setAlarmPlaying(false);
-  };
-
-  const triggerNavigationForRoute = (routeId) => {
-    setSelectedRouteId(routeId);
-    setUseAlternativeRoute(false);
-    setActiveTab('rotas');
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col md:flex-row">
-      
-      {/* BARRA LATERAL */}
-      <aside className="w-full md:w-80 bg-slate-900 border-r border-slate-800 flex flex-col">
-        <div className="p-6 border-b border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-              <Shield className="h-6 w-6 text-amber-500" />
+    <!-- BARRA LATERAL DE NAVEGAÇÃO -->
+    <aside class="w-full md:w-80 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0">
+        <div class="p-6 border-b border-slate-800">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-wider text-amber-400">BCB OPERACIONAL</h1>
+                    <p class="text-xs text-slate-400 uppercase tracking-wider">Logística & Escolta</p>
+                </div>
             </div>
-            <div>
-              <h1 className="font-bold text-lg tracking-wider text-amber-400">BCB OPERACIONAL</h1>
-              <p className="text-xs text-slate-400">Escolta de Alta Dignidade</p>
-            </div>
-          </div>
         </div>
 
-        {/* Chaveador de Visualização */}
-        <div className="p-3 mx-4 my-2 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
-          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider text-center">Foco do Painel</p>
-          <div className="grid grid-cols-2 gap-1">
-            <button 
-              onClick={() => setInterfaceMode('presentation')}
-              className={`py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-all ${interfaceMode === 'presentation' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-slate-200'}`}
-            >
-              <Monitor className="h-3.5 w-3.5" /> Entrevista
-            </button>
-            <button 
-              onClick={() => setInterfaceMode('operational')}
-              className={`py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-all ${interfaceMode === 'operational' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-slate-200'}`}
-            >
-              <Smartphone className="h-3.5 w-3.5" /> No Carro
-            </button>
-          </div>
+        <!-- Chaveador de Visualização -->
+        <div class="p-3 mx-4 my-3 bg-slate-950 border border-slate-850 rounded-xl space-y-1">
+            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider text-center">Foco do Painel</p>
+            <div class="grid grid-cols-2 gap-1 text-xs">
+                <button onclick="setInterfaceMode('presentation')" id="mode-presentation" class="py-1.5 rounded-lg font-semibold flex items-center justify-center gap-1 transition-all bg-amber-500 text-slate-950 font-bold">
+                    💻 Monitor
+                </button>
+                <button onclick="setInterfaceMode('operational')" id="mode-operational" class="py-1.5 rounded-lg font-semibold flex items-center justify-center gap-1 transition-all text-slate-400 hover:text-slate-200">
+                    📱 No Carro
+                </button>
+            </div>
         </div>
 
-        <nav className="flex-1 px-4 py-2 space-y-1">
-          <button
-            onClick={() => setActiveTab('agenda')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'agenda' ? 'bg-amber-500/10 text-amber-400 border-l-4 border-amber-500' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`}
-          >
-            <Calendar className="h-4 w-4" />
-            Escala & Hub Banco Central
-          </button>
-
-          <button
-            onClick={() => setActiveTab('rotas')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === 'rotas' ? 'bg-amber-500/10 text-amber-400 border-l-4 border-amber-500' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`}
-          >
-            <Navigation className="h-4 w-4" />
-            Consola GPS Dinâmica
-          </button>
+        <!-- Navegação entre Secções -->
+        <nav class="flex-1 px-4 py-2 space-y-1">
+            <button onclick="switchTab('agenda')" id="tab-btn-agenda" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all bg-amber-500/10 text-amber-400 border-l-4 border-amber-500">
+                📅 Agenda & Escala do Dia
+            </button>
+            <button onclick="switchTab('gps')" id="tab-btn-rotas" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                🧭 Consola GPS Dinâmica
+            </button>
+            <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                🔧 Lista de Verificação (Viatura)
+            </button>
+            <button onclick="switchTab('seguranca')" id="tab-btn-seguranca" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                🛡️ Varredura de Segurança
+            </button>
         </nav>
 
-        <div className="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
-          <p>Terminal Central Conectado</p>
-          <p className="mt-1 font-mono text-[10px]">CÓD: BCB-2026.11-MAPS</p>
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
+            <p>Dispositivo Seguro de Bordo</p>
+            <p class="mt-1 font-mono text-[10px]">CÓD: BCB-2026.11-LIVE</p>
         </div>
-      </aside>
+    </aside>
 
-      {/* CONTEÚDO OPERATIVO PRINCIPAL */}
-      <main className="flex-1 flex flex-col min-w-0 bg-slate-950 p-6 md:p-8 overflow-y-auto">
+    <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
+    <main class="flex-1 flex flex-col min-w-0 bg-slate-950 p-6 md:p-8 overflow-y-auto">
         
-        {/* TAB 1: AGENDA COM INTEGRALIZAÇÃO DOS LINKS EXTERNOS */}
-        {activeTab === 'agenda' && (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-100">Painel Integrado de Logística Presidencial</h2>
-                <p className="text-sm text-slate-400 mt-1">Todos os trajetos configurados abaixo têm como ponto de partida ou controle o Banco Central do Brasil.</p>
-              </div>
-              <div className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800">
-                <Calendar className="h-4.5 w-4.5 text-amber-500" />
-                <span className="text-slate-200 text-sm font-mono">11 de Julho de 2026</span>
-              </div>
+        <!-- CABEÇALHO SUPERIOR (Relógio e Status) -->
+        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-900 pb-6 mb-6">
+            <div>
+                <h2 class="text-xs font-bold text-amber-500 uppercase tracking-widest">Painel Integrado de Apoio Governamental</h2>
+                <h3 class="text-2xl font-extrabold text-white mt-1">Presidência do Banco Central do Brasil</h3>
             </div>
-
-            {interfaceMode === 'presentation' && (
-              <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-2xl flex items-start gap-3">
-                <Info className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
-                <div className="text-xs text-slate-300 space-y-1">
-                  <p className="font-bold text-amber-400">Painel Informativo de Escolta Ativo</p>
-                  <p>Mapeamento de vias com base em velocidade constante de **70 km/h** em movimento. O botão **"Mapa Real"** redireciona diretamente para o link de dados do satélite para validação de contingência.</p>
+            
+            <div class="flex items-center gap-6 bg-slate-900/60 p-3 rounded-xl border border-slate-800/60">
+                <!-- Relógio -->
+                <div class="text-right">
+                    <div class="text-white font-bold tracking-wider mono text-sm" id="live-clock">16:59:00</div>
+                    <div class="text-[9px] text-amber-400 uppercase tracking-widest font-semibold">Sábado, 11 Julho 2026</div>
                 </div>
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div className="lg:col-span-8 p-6 bg-slate-900 border border-slate-800 rounded-2xl space-y-4">
-                <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-                  <h3 className="text-md font-bold text-amber-400 flex items-center gap-2">
-                    <Map className="h-5 w-5" /> Escala de Rotas BACEN
-                  </h3>
-                  <span className="px-2 py-0.5 bg-slate-950 text-slate-400 text-xs rounded-md font-mono">
-                    6 Destinos Críticos
-                  </span>
+                <!-- Status -->
+                <div class="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-full border border-emerald-500/20">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Canal Ativo</span>
                 </div>
+            </div>
+        </header>
+
+        <!-- BANNER INFORMATIVO -->
+        <div id="presentation-banner" class="mb-6 p-4 bg-amber-500/5 border border-amber-500/20 rounded-2xl flex items-start gap-3">
+            <div class="text-amber-500 mt-0.5">ℹ️</div>
+            <div class="text-xs text-slate-300 space-y-1">
+                <p class="font-bold text-amber-400">Ambiente de Simulação de Trânsito e Segurança de Brasília</p>
+                <p>Todos os percursos abaixo têm como ponto de controlo e partida o **Banco Central**. Os trajetos calculam de forma precisa o tempo ganho em deslocamentos livres com escolta militar a uma velocidade média de **70 km/h**.</p>
+            </div>
+        </div>
+
+        <!-- SECCÃO 1: AGENDA E COMPROMISSOS -->
+        <section id="section-agenda" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
-                <div className="relative border-l border-slate-850 ml-3 space-y-6 pt-4">
-                  {agendaTimeline.map((task, index) => (
-                    <div key={index} className="relative pl-6">
-                      <span className={`absolute -left-1.5 top-1.5 h-3 w-3 rounded-full border-2 ${task.routeId ? 'bg-amber-500 border-amber-500' : 'bg-slate-900 border-slate-700'}`}></span>
-                      
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800/80 rounded-xl hover:border-slate-700 transition-all">
-                        <div className="space-y-1.5 flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-mono font-bold text-amber-500 bg-amber-500/5 px-2 py-0.5 rounded border border-amber-500/10">{task.time}</span>
-                            <h4 className="text-sm font-bold text-slate-200">{task.title}</h4>
-                          </div>
-                          <p className="text-xs text-slate-400 leading-relaxed">{task.desc}</p>
-                          {task.routeId && (
-                            <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-1">
-                              <span className="font-bold text-slate-400">Via Principal:</span> {routesDatabase[task.routeId].primary.via} 
-                              <span className="text-amber-500/50">|</span> 
-                              <span className="font-bold text-slate-400">Distância:</span> {routesDatabase[task.routeId].primary.dist} km
-                            </div>
-                          )}
-                        </div>
-                        
-                        {task.routeId && (
-                          <div className="flex sm:flex-col gap-2">
-                            <button
-                              onClick={() => triggerNavigationForRoute(task.routeId)}
-                              className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg transition-all"
-                            >
-                              <Navigation className="h-3.5 w-3.5" /> Consola
-                            </button>
-                            <a 
-                              href={routesDatabase[task.routeId].mapLink} 
-                              target="_blank" 
-                              rel="noreferrer"
-                              className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 font-medium text-xs rounded-lg border border-slate-700 transition-all"
-                            >
-                              <ExternalLink className="h-3.5 w-3.5" /> Mapa Real
-                            </a>
-                          </div>
-                        )}
-                      </div>
+                <!-- Cronograma Diário (Col 8) -->
+                <div class="lg:col-span-8 p-6 bg-slate-900 border border-slate-800 rounded-2xl space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                            📋 Rotas & Escala Presidencial
+                        </h3>
+                        <span class="px-2 py-0.5 bg-slate-950 text-slate-400 text-xs rounded-md font-mono">
+                            Partidas do Banco Central
+                        </span>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* PAINEL INFORMATIVO COMPLEMENTAR DE DADOS */}
-              <div className="lg:col-span-4 space-y-6">
-                <div className="p-6 bg-slate-900 border border-slate-800 rounded-2xl space-y-4">
-                  <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                    <Cpu className="h-4 w-4 text-amber-500" /> Resumo Consolidado (Média 70km/h)
-                  </h3>
-                  
-                  <div className="space-y-2.5">
-                    {Object.keys(routesDatabase).map((key) => {
-                      const r = routesDatabase[key];
-                      const timeMins = Math.round((r.primary.dist / 70) * 60);
-                      return (
-                        <div key={key} className="p-3 bg-slate-950 rounded-xl border border-slate-850 flex justify-between items-center">
-                          <div>
-                            <p className="text-xs font-bold text-slate-300 truncate max-w-[180px]">{r.title.replace('Banco Central ➔ ', '')}</p>
-                            <p className="text-[10px] text-slate-500 truncate max-w-[180px]">{r.primary.via}</p>
+                    <!-- Lista de Compromissos da Agenda -->
+                    <div class="space-y-4 pt-2">
+                        
+                        <!-- Rota 1: Aeroporto -->
+                        <div class="p-4 bg-slate-950 border border-slate-850 rounded-xl hover:border-amber-500/30 transition-all flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                          <div class="space-y-1.5 flex-1">
+                            <div class="flex items-center gap-2">
+                              <span class="text-[10px] font-mono font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">08:00</span>
+                              <h4 class="text-sm font-bold text-slate-200">Extração tática ➔ Aeroporto de Brasília</h4>
+                            </div>
+                            <p class="text-xs text-slate-400">Via principal: ERW - Sul e DF-047 (12.2 km | Trânsito: 14 min | Escolta 70km/h: ~10.5 min)</p>
                           </div>
-                          <div className="text-right">
-                            <p className="text-xs font-mono font-bold text-amber-400">{timeMins} min</p>
-                            <p className="text-[10px] font-mono text-slate-400">{r.primary.dist} km</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 2: GPS COM ATUALIZAÇÕES DOS TRAJETOS DO BANCO CENTRAL */}
-        {activeTab === 'rotas' && (
-          <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div>
-                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-100">GPS Tático de Rotas de Bordo</h2>
-                <p className="text-sm text-slate-400 mt-1">Simulador balístico e cronometragem dinâmica de tempos de tráfego.</p>
-              </div>
-              
-              <div className="flex bg-slate-900 border border-slate-800 p-1 rounded-xl">
-                <button onClick={() => setMapStyle('traffic')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${mapStyle === 'traffic' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400'}`}>
-                  Trânsito
-                </button>
-                <button onClick={() => setMapStyle('satellite')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${mapStyle === 'satellite' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400'}`}>
-                  Satélite
-                </button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div className="lg:col-span-4 p-6 bg-slate-900 border border-slate-800 rounded-2xl space-y-5">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
-                  <Sliders className="h-4.5 w-4.5" /> Definições do Trajeto
-                </h3>
-
-                <div className="space-y-2">
-                  <label className="block text-xs font-bold text-slate-400 uppercase">Selecione o Destino partindo do BCB:</label>
-                  <select 
-                    value={selectedRouteId} 
-                    onChange={(e) => {
-                      setSelectedRouteId(e.target.value);
-                      setUseAlternativeRoute(false);
-                    }}
-                    className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200"
-                  >
-                    <option value="bcb_aeroporto">➔ Aeroporto de Brasília</option>
-                    <option value="bcb_planalto">➔ Palácio do Planalto</option>
-                    <option value="bcb_congresso">➔ Congresso Nacional</option>
-                    <option value="bcb_fazenda">➔ Ministério da Fazenda</option>
-                    <option value="bcb_piantas">➔ Piantas Bistrô</option>
-                    <option value="bcb_rubaiyat">➔ Rubaiyat Brasília</option>
-                  </select>
-                </div>
-
-                <div className="space-y-3 bg-slate-950 p-4 border border-slate-850 rounded-xl">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-slate-400 uppercase">Velocidade de Escolta:</span>
-                    <span className="font-mono font-black text-amber-400 text-sm">{targetSpeed} km/h</span>
-                  </div>
-                  <input 
-                    type="range" min="30" max="110" value={targetSpeed}
-                    onChange={(e) => setTargetSpeed(parseInt(e.target.value))}
-                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-xs font-bold text-slate-400 uppercase">Vias e Alternativas de Acesso:</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button" onClick={() => setUseAlternativeRoute(false)}
-                      className={`p-3 rounded-xl border text-xs text-left transition-all flex flex-col justify-between ${!useAlternativeRoute ? 'border-amber-500 bg-amber-500/5 text-amber-400' : 'border-slate-800 bg-slate-950'}`}
-                    >
-                      <span className="font-bold uppercase text-[10px]">Principal</span>
-                      <span className="text-[9px] text-slate-400 mt-1 truncate">{routesDatabase[selectedRouteId]?.primary.via}</span>
-                    </button>
-                    <button
-                      type="button" onClick={() => setUseAlternativeRoute(true)}
-                      className={`p-3 rounded-xl border text-xs text-left transition-all flex flex-col justify-between ${useAlternativeRoute ? 'border-amber-500 bg-amber-500/5 text-amber-400' : 'border-slate-800 bg-slate-950'}`}
-                    >
-                      <span className="font-bold uppercase text-[10px]">Alternativa</span>
-                      <span className="text-[9px] text-slate-400 mt-1 truncate">{routesDatabase[selectedRouteId]?.alternative.via}</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-slate-800">
-                  <a 
-                    href={routesDatabase[selectedRouteId]?.mapLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all"
-                  >
-                    <ExternalLink className="h-4 w-4" /> Abrir no Google Maps Oficial
-                  </a>
-                </div>
-              </div>
-
-              {/* VISUALIZAÇÃO GRÁFICA DO TRAJETO */}
-              <div className="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
-                <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-200">{routesDatabase[selectedRouteId]?.title}</h4>
-                    <p className="text-xs text-slate-400 mt-0.5">Via ativa: <span className="text-amber-400">{timeResults.viaName}</span></p>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/5 border border-emerald-500/10 px-2 py-1 rounded-lg">
-                      {timeResults.distance} km total
-                    </span>
-                  </div>
-                </div>
-
-                {/* Área do Mapa Virtual */}
-                <div className="my-6 h-64 bg-slate-950 border border-slate-850 rounded-xl relative flex items-center justify-center overflow-hidden">
-                  <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:16px_16px]"></div>
-                  <svg className="w-full h-full max-w-md p-4" viewBox="0 0 600 300">
-                    <path d={useAlternativeRoute ? routesDatabase[selectedRouteId]?.alternative.path : routesDatabase[selectedRouteId]?.primary.path} fill="none" stroke="#f59e0b" strokeWidth="4" strokeDasharray="6 4" className="animate-pulse" />
-                    <circle cx="100" cy="240" r="8" fill="#10b981" />
-                    <text x="90" y="220" fill="#94a3b8" fontSize="10" fontWeight="bold">BACEN (Origem)</text>
-                    <circle cx="480" cy="60" r="8" fill="#ef4444" />
-                    <text x="440" y="50" fill="#f59e0b" fontSize="10" fontWeight="bold">Destino Selecionado</text>
-                  </svg>
-                  
-                  <div className="absolute bottom-3 left-3 bg-slate-900/90 backdrop-blur-sm border border-slate-800 p-3 rounded-xl space-y-1">
-                    <p className="text-[10px] text-slate-400 font-bold uppercase">Tempo Estimado Corrigido</p>
-                    <p className="text-xl font-mono font-black text-amber-400">
-                      {timeResults.adjustedMins}m {timeResults.adjustedSecs}s
-                    </p>
-                    <p className="text-[9px] text-slate-500">Tempo nominal sem trânsito: {timeResults.nominalMins}m {timeResults.nominalSecs}s</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
-    </div>
-  );
-}
+                          <div class="flex gap-2 shrink-0">
+                            <button onclick="loadGpsRoute('bcb_aeroporto')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg transition-all">Consola</button>
+                            <a href="https://www.google.com/maps/dir/Brazilian+Central+Bank,+SBS+Quadra+3+Bloco+B+-+Asa+Sul,+Bras%C3%ADlia+-+DF,+Brazil/Aeroporto+Internacional+de+Bras%C3%ADlia+Presidente+Juscelino+Kubitschek,+Lago+Sul,+Bras%C3%ADlia+-+Federal+District,+Brazil/data=!4m14!4m13!1m5!1m1!19sChIJwR2jxN46WpMRiFJUwhPz6RQ!2m2!1d-47.8855363!2d-15.803094399999999!1m5!1m1!19sChIJQyttu4IlWpMRUIfuMAnj674!2m2!1d-47.9193484!2d-15.870690499999998!3e0" target="_blank" class="px-3
