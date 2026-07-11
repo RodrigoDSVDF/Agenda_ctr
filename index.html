@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Segurança Logística e Planeamento de Viagem Segura</title>
+    <!-- Tailwind CSS para design moderno e responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts para tipografia premium -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-cyan-500 selection:text-slate-900">
+
+    <!-- CABEÇALHO / HERO -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-cyan-500/10 rounded-lg text-cyan-400 border border-cyan-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+                        PVS <span class="text-cyan-400 font-medium">| Plano de Viagem Segura</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 uppercase tracking-widest">Presidência do Banco Central do Brasil - Coordenação de Apoio Logístico</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 bg-slate-950 px-4 py-2 rounded-full border border-slate-800">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" id="status-glow"></span>
+                <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider" id="status-text">Operação Ativa</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+        <!-- INTRODUÇÃO TÁTICA -->
+        <div class="bg-gradient-to-r from-slate-900 to-slate-850 p-6 sm:p-8 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 opacity-5 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-72 h-72">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div class="max-w-3xl relative z-10 space-y-4">
+                <span class="px-2.5 py-1 text-xs font-semibold bg-cyan-500/10 text-cyan-400 rounded-md border border-cyan-500/20 uppercase tracking-wider">Simulador de Planeamento Tático</span>
+                <h2 class="text-3xl font-extrabold text-white tracking-tight sm:text-4xl">
+                    Antecipação de Cenários de Trânsito & Logística Urbana
+                </h2>
+                <p class="text-base text-slate-300 leading-relaxed">
+                    Esta ferramenta interativa permite projetar e simular as condições de transporte, segurança física e manutenção preventiva das viagens táticas oficiais. Configure variáveis climáticas e de tráfego para visualizar as melhores rotas de emergência instantaneamente.
+                </p>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 1: LINKS ÚTEIS E ÓRGÃOS OFICIAIS -->
+        <section class="space-y-4">
+            <div class="flex items-center gap-2">
+                <div class="p-1 bg-blue-500/10 text-blue-400 rounded-md border border-blue-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-white">Órgãos de Monitorização de Trânsito em Brasília</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- LINK 1: DETRAN DF -->
+                <a href="https://www.detran.df.gov.br/" target="_blank" rel="noopener noreferrer" class="group bg-slate-900 p-5 rounded-xl border border-slate-800 hover:border-cyan-500/50 transition-all duration-300 flex flex-col justify-between hover:shadow-lg hover:shadow-cyan-500/5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-cyan-400 uppercase tracking-widest">Trânsito DF</span>
+                            <span class="text-slate-500 group-hover:text-cyan-400 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                                </svg>
+                            </span>
+                        </div>
+                        <h4 class="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">Detran-DF</h4>
+                        <p class="text-xs text-slate-400">Verifique boletins oficiais de interdições de vias por obras, eventos e alterações de tráfego no Distrito Federal.</p>
+                    </div>
+                </a>
+
+                <!-- LINK 2: AGENDA OFICIAL BCB -->
+                <a href="https://www.bcb.gov.br/acessoainformacao/agenda" target="_blank" rel="noopener noreferrer" class="group bg-slate-900 p-5 rounded-xl border border-cyan-500 hover:border-cyan-400 transition-all duration-300 flex flex-col justify-between hover:shadow-lg hover:shadow-cyan-500/10">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-cyan-400 uppercase tracking-widest">Site do BCB</span>
+                            <span class="text-cyan-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                                </svg>
+                            </span>
+                        </div>
+                        <h4 class="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">Agenda de Autoridades (BCB)</h4>
+                        <p class="text-xs text-slate-300 font-semibold">Aceda diretamente ao portal de transparência do Banco Central do Brasil para consultar compromissos em tempo real.</p>
+                    </div>
+                </a>
+
+                <!-- LINK 3: DER-DF -->
+                <a href="http://www.der.df.gov.br/" target="_blank" rel="noopener noreferrer" class="group bg-slate-900 p-5 rounded-xl border border-slate-800 hover:border-cyan-500/50 transition-all duration-300 flex flex-col justify-between hover:shadow-lg hover:shadow-cyan-500/5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-cyan-400 uppercase tracking-widest">Rodovias DF</span>
+                            <span class="text-slate-500 group-hover:text-cyan-400 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                                </svg>
+                            </span>
+                        </div>
+                        <h4 class="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">DER-DF (Estradas)</h4>
+                        <p class="text-xs text-slate-400">Acompanhe obras, acidentes e as operações diárias de faixas reversas em rodovias distritais (EPTG, EPIG, etc.).</p>
+                    </div>
+                </a>
+
+                <!-- LINK 4: WAZE MAP DF -->
+                <a href="https://www.waze.com/live-map" target="_blank" rel="noopener noreferrer" class="group bg-slate-900 p-5 rounded-xl border border-slate-800 hover:border-cyan-500/50 transition-all duration-300 flex flex-col justify-between hover:shadow-lg hover:shadow-cyan-500/5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-cyan-400 uppercase tracking-widest">Tráfego Real</span>
+                            <span class="text-slate-500 group-hover:text-cyan-400 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                                </svg>
+                            </span>
+                        </div>
+                        <h4 class="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">Mapa Digital do Trânsito</h4>
+                        <p class="text-xs text-slate-400">Verifique em tempo real engarrafamentos, incidentes reportados por utilizadores e trânsito lento no Plano Piloto.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- NOVO: VISUALIZADOR EXECUTÁVEL DE AGENDA (INTERATIVO) -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="p-1 bg-cyan-500/10 text-cyan-400 rounded-md border border-cyan-500/20">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Visualizador Integrado: Agenda de Autoridades</h3>
+                </div>
+                <div class="text-xs text-slate-400">
+                    Clique num compromisso para simular e traçar a rota abaixo.
+                </div>
+            </div>
+
+            <!-- TERMINAL EXECUTÁVEL DA AGENDA -->
+            <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6 flex flex-col md:flex-row gap-6">
+                <!-- Abas dos Dias (Filtros rápidos) -->
+                <div class="flex flex-row md:flex-col gap-2 overflow-x-auto pb-2 md:pb-0 md:w-48 shrink-0 border-b md:border-b-0 md:border-r border-slate-800">
+                    <button onclick="selectAgendaDay('seg')" id="tab-seg" class="px-4 py-2 text-left rounded-lg text-sm font-semibold border border-cyan-500/20 bg-cyan-950/20 text-cyan-400 whitespace-nowrap transition-all">Segunda-feira</button>
+                    <button onclick="selectAgendaDay('ter')" id="tab-ter" class="px-4 py-2 text-left rounded-lg text-sm font-semibold border border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-850 whitespace-nowrap transition-all">Terça-feira</button>
+                    <button onclick="selectAgendaDay('qua')" id="tab-qua" class="px-4 py-2 text-left rounded-lg text-sm font-semibold border border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-850 whitespace-nowrap transition-all">Quarta-feira</button>
+                </div>
+
+                <!-- Conteúdo dos Compromissos do Dia Selecionado -->
+                <div class="flex-1 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <span id="agenda-day-title" class="text-sm font-bold text-slate-300 uppercase tracking-wider">Compromissos para Segunda-feira</span>
+                        <span class="text-[10px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded uppercase font-bold">Simulado</span>
+                    </div>
+
+                    <div id="agenda-list" class="space-y-3">
+                        <!-- Gerado Dinamicamente pelo JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 2: CONTROLADOR INTERATIVO E MAPA ESQUEMÁTICO -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- CONTROLO DE VARIÁVEIS -->
+            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-6">
+                <div>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span>
+                        Seletor Manual de Destino
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">Selecione manualmente ou use o Visualizador de Agenda acima.</p>
+                </div>
+
+                <div class="space-y-3">
+                    <button onclick="setDestination('bc')" id="btn-dest-bc" class="w-full text-left p-4 rounded-xl border border-cyan-500 bg-cyan-950/20 hover:bg-cyan-950/30 transition-all">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold text-white text-sm">Edifício-Sede do Banco Central</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold bg-cyan-500 text-slate-950 rounded uppercase">Gabinete</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mt-1">Localização: Setor Bancário Sul (SBS)</p>
+                    </button>
+
+                    <button onclick="setDestination('fazenda')" id="btn-dest-fazenda" class="w-full text-left p-4 rounded-xl border border-slate-800 hover:border-slate-700 transition-all">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold text-slate-300 text-sm">Ministério das Finanças</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold bg-amber-500 text-slate-950 rounded uppercase">Reunião CMN</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Localização: Esplanada dos Ministérios, Bloco P</p>
+                    </button>
+
+                    <button onclick="setDestination('planalto')" id="btn-dest-planalto" class="w-full text-left p-4 rounded-xl border border-slate-800 hover:border-slate-700 transition-all">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold text-slate-300 text-sm">Palácio do Planalto</span>
+                            <span class="px-2 py-0.5 text-[10px] font-bold bg-rose-500 text-slate-950 rounded uppercase">Audiência</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Localização: Praça dos Três Poderes</p>
+                    </button>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800 space-y-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-white">Simular Alertas & Condições</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Adicione fatores de risco para forçar rotas alternativas.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-2">
+                        <!-- Switch Chuva -->
+                        <button onclick="toggleAlert('rain')" id="switch-rain" class="flex items-center justify-between p-3 rounded-lg border border-slate-800 bg-slate-950 hover:bg-slate-900 transition-all">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-1.5 bg-slate-900 rounded text-slate-400" id="icon-rain">🌧️</div>
+                                <span class="text-xs font-semibold text-slate-300">Previsão de Chuva Forte</span>
+                            </div>
+                            <div class="w-8 h-4 bg-slate-800 rounded-full p-0.5 flex items-center transition-all" id="toggle-bg-rain">
+                                <div class="w-3 h-3 bg-slate-500 rounded-full transition-all" id="toggle-dot-rain"></div>
+                            </div>
+                        </button>
+
+                        <!-- Switch Protesto -->
+                        <button onclick="toggleAlert('protest')" id="switch-protest" class="flex items-center justify-between p-3 rounded-lg border border-slate-800 bg-slate-950 hover:bg-slate-900 transition-all">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-1.5 bg-slate-900 rounded text-slate-400" id="icon-protest">📢</div>
+                                <span class="text-xs font-semibold text-slate-300">Manifestação na Esplanada</span>
+                            </div>
+                            <div class="w-8 h-4 bg-slate-800 rounded-full p-0.5 flex items-center transition-all" id="toggle-bg-protest">
+                                <div class="w-3 h-3 bg-slate-500 rounded-full transition-all" id="toggle-dot-protest"></div>
+                            </div>
+                        </button>
+
+                        <!-- Switch Obra -->
+                        <button onclick="toggleAlert('works')" id="switch-works" class="flex items-center justify-between p-3 rounded-lg border border-slate-800 bg-slate-950 hover:bg-slate-900 transition-all">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-1.5 bg-slate-900 rounded text-slate-400" id="icon-works">🚧</div>
+                                <span class="text-xs font-semibold text-slate-300">Obras na Rota Principal</span>
+                            </div>
+                            <div class="w-8 h-4 bg-slate-800 rounded-full p-0.5 flex items-center transition-all" id="toggle-bg-works">
+                                <div class="w-3 h-3 bg-slate-500 rounded-full transition-all" id="toggle-dot-works"></div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISUALIZAÇÃO ESQUEMÁTICA / MAPEAMENTO -->
+            <div class="lg:col-span-2 bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-6">
+                <div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Mapa Logístico Simulado</span>
+                            <h3 class="text-lg font-bold text-white mt-0.5" id="map-dest-title">Percurso para: Sede do Banco Central</h3>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-black text-cyan-400 mono" id="map-dist-time">~4.5 km / 8 min</div>
+                            <p class="text-[10px] text-slate-400 uppercase tracking-wider">Trânsito fluido estimado</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAPA ESQUEMÁTICO DESENHADO COM SVG E HTML -->
+                <div class="bg-slate-950 rounded-xl border border-slate-800 h-64 relative overflow-hidden p-4 flex flex-col justify-between">
+                    <div class="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#06b6d4_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                    
+                    <!-- LINHAS DO MAPA GRÁFICO (SVG) -->
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Rota Principal -->
+                        <path id="svg-route-main" d="M 50,150 Q 150,50 300,100 T 550,130" fill="none" stroke="#06b6d4" stroke-width="4" stroke-dasharray="8 4" class="transition-all duration-500" />
+                        <!-- Rota Alternativa / Fuga -->
+                        <path id="svg-route-alt" d="M 50,150 Q 150,220 350,180 T 550,130" fill="none" stroke="#64748b" stroke-width="3" stroke-dasharray="4 4" class="transition-all duration-500" />
+                    </svg>
+
+                    <!-- Pontos no Mapa (Markup) -->
+                    <div class="relative z-10 flex justify-between h-full items-center">
+                        <!-- Ponto Origem -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 h-8 rounded-full bg-slate-900 border-2 border-cyan-400 flex items-center justify-center text-xs font-bold text-cyan-400">
+                                S1
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-400 mt-1 uppercase">Origem</span>
+                        </div>
+
+                        <!-- Estado Rota Principal -->
+                        <div class="absolute left-1/3 top-1/4 -translate-y-1/2 flex flex-col items-center">
+                            <span class="px-2 py-0.5 text-[9px] font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 rounded backdrop-blur" id="label-route-main">Eixão Sul (Principal)</span>
+                        </div>
+
+                        <!-- Estado Rota Fuga -->
+                        <div class="absolute left-1/2 bottom-1/4 translate-y-1/2 flex flex-col items-center">
+                            <span class="px-2 py-0.5 text-[9px] font-semibold bg-slate-800 text-slate-400 rounded backdrop-blur" id="label-route-alt">L2 Sul (Emergência)</span>
+                        </div>
+
+                        <!-- Ponto Destino -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-10 h-10 rounded-full bg-cyan-950 border-2 border-cyan-400 flex items-center justify-center text-sm shadow-lg shadow-cyan-500/25" id="map-dest-icon">
+                                🏢
+                            </div>
+                            <span class="text-[10px] font-bold text-cyan-400 mt-1 uppercase" id="map-dest-label">Banco Central</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NOTIFICAÇÃO TÁTICA / RECOMENDAÇÃO -->
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex items-start gap-3" id="alert-box">
+                    <span class="p-1.5 bg-emerald-500/10 text-emerald-400 rounded border border-emerald-500/20 text-xs" id="alert-box-icon">✔️</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-white uppercase" id="alert-box-title">Via Principal Desimpedida</h4>
+                        <p class="text-xs text-slate-400 mt-1" id="alert-box-desc">O percurso segue pela rota mais rápida com segurança e escolta padrão ativada.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 3: MATRIZ DE RISCO ATIVA -->
+        <section class="space-y-4">
+            <div class="flex items-center gap-2">
+                <div class="p-1 bg-amber-500/10 text-amber-400 rounded-md border border-amber-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-white">Análise e Antecipação Dinâmica de Riscos</h3>
+            </div>
+
+            <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-950 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                                <th class="p-4">Cenário Identificado</th>
+                                <th class="p-4">Nível de Risco</th>
+                                <th class="p-4">Impacto Operacional</th>
+                                <th class="p-4">Mitigação / Rota Segura</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/50 text-xs">
+                            <!-- Risco 1: Chuva -->
+                            <tr id="row-risk-rain" class="transition-colors">
+                                <td class="p-4 font-semibold text-slate-300">Previsão de Chuva Forte</td>
+                                <td class="p-4">
+                                    <span id="badge-risk-rain" class="px-2 py-0.5 font-bold rounded bg-slate-800 text-slate-500 uppercase tracking-wide text-[9px]">Baixo</span>
+                                </td>
+                                <td class="p-4 text-slate-400" id="impact-risk-rain">Sem impacto imediato. Velocidade normal da via mantida.</td>
+                                <td class="p-4 text-slate-300" id="mitigation-risk-rain">Manter velocidade de segurança.</td>
+                            </tr>
+                            <!-- Risco 2: Protesto -->
+                            <tr id="row-risk-protest" class="transition-colors">
+                                <td class="p-4 font-semibold text-slate-300">Manifestação / Aglomerações</td>
+                                <td class="p-4">
+                                    <span id="badge-risk-protest" class="px-2 py-0.5 font-bold rounded bg-slate-800 text-slate-500 uppercase tracking-wide text-[9px]">Nulo</span>
+                                </td>
+                                <td class="p-4 text-slate-400" id="impact-risk-protest">Nenhum evento político ou sindical mapeado para hoje.</td>
+                                <td class="p-4 text-slate-300" id="mitigation-risk-protest">Ponto de recolha e desembarque oficial livre.</td>
+                            </tr>
+                            <!-- Risco 3: Obras -->
+                            <tr id="row-risk-works" class="transition-colors">
+                                <td class="p-4 font-semibold text-slate-300">Interdições e Obras Locais</td>
+                                <td class="p-4">
+                                    <span id="badge-risk-works" class="px-2 py-0.5 font-bold rounded bg-slate-800 text-slate-500 uppercase tracking-wide text-[9px]">Baixo</span>
+                                </td>
+                                <td class="p-4 text-slate-400" id="impact-risk-works">Intervenções regulares do DER-DF sem retenções críticas.</td>
+                                <td class="p-4 text-slate-300" id="mitigation-risk-works">Manter rotas originais estabelecidas.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- DUAS COLUNAS: LISTA DE VERIFICAÇÃO DO VEÍCULO & VARREDURA DE SEGURANÇA -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- COLUNA A: LISTA DE VERIFICAÇÃO DO VEÍCULO -->
+            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-6">
+                <div>
+                    <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Procedimento Técnico Prévio</span>
+                    <h3 class="text-xl font-bold text-white mt-0.5">Lista de Verificação de Segurança do Veículo</h3>
+                    <p class="text-xs text-slate-400 mt-1">Conclua todas as verificações essenciais da viatura antes da partida.</p>
+                </div>
+
+                <!-- BARRA DE PROGRESSO -->
+                <div class="space-y-2 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400">Estado da Viatura:</span>
+                        <span id="progress-percent" class="font-bold text-cyan-400">0% Concluído</span>
+                    </div>
+                    <div class="w-full bg-slate-850 h-2 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="bg-cyan-500 h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <!-- ITENS DO CHECKLIST -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button onclick="toggleCheckItem(this)" class="flex items-center gap-3 p-3 bg-slate-950 hover:bg-slate-850 rounded-xl border border-slate-800/60 text-left transition-all group">
+                        <div class="w-5 h-5 rounded border border-slate-700 bg-slate-900 flex items-center justify-center text-cyan-400 group-hover:border-cyan-500/50" id="box-oil"></div>
+                        <div>
+                            <span class="text-xs font-semibold text-white block">Óleos & Fluidos</span>
+                            <span class="text-[9px] text-slate-400">Motor, Arrefecimento, Travões</span>
+                        </div>
+                    </button>
+
+                    <button onclick="toggleCheckItem(this)" class="flex items-center gap-3 p-3 bg-slate-950 hover:bg-slate-850 rounded-xl border border-slate-800/60 text-left transition-all group">
+                        <div class="w-5 h-5 rounded border border-slate-700 bg-slate-900 flex items-center justify-center text-cyan-400 group-hover:border-cyan-500/50"></div>
+                        <div>
+                            <span class="text-xs font-semibold text-white block">Pneumática & Pneus</span>
+                            <span class="text-[9px] text-slate-400">Pressão, Rasto e Estepe</span>
+                        </div>
+                    </button>
+
+                    <button onclick="toggleCheckItem(this)" class="flex items-center gap-3 p-3 bg-slate-950 hover:bg-slate-850 rounded-xl border border-slate-800/60 text-left transition-all group">
+                        <div class="w-5 h-5 rounded border border-slate-700 bg-slate-900 flex items-center justify-center text-cyan-400 group-hover:border-cyan-500/50"></div>
+                        <div>
+                            <span class="text-xs font-semibold text-white block">Instalação Elétrica</span>
+                            <span class="text-[9px] text-slate-400">Faróis, Setas e Sinalizadores</span>
+                        </div>
+                    </button>
+
+                    <button onclick="toggleCheckItem(this)" class="flex items-center gap-3 p-3 bg-slate-950 hover:bg-slate-850 rounded-xl border border-slate-800/60 text-left transition-all group">
+                        <div class="w-5 h-5 rounded border border-slate-700 bg-slate-900 flex items-center justify-center text-cyan-400 group-hover:border-cyan-500/50"></div>
+                        <div>
+                            <span class="text-xs font-semibold text-white block">Kit de Emergência</span>
+                            <span class="text-[9px] text-slate-400">Ferramentas, Macaco e Triângulo</span>
+                        </div>
+                    </button>
+
+                    <button onclick="toggleCheckItem(this)" class="flex items-center gap-3 p-3 bg-slate-950 hover:bg-slate-850 rounded-xl border border-slate-800/60 text-left transition-all group">
+                        <div class="w-5 h-5 rounded border border-slate-700 bg-slate-900 flex items-center justify-center text-cyan-400 group-hover:border-cyan-500/50"></div>
+                        <div>
+                            <span class="text-xs font-semibold text-white block">Blindagem Ativa</span>
+                            <span class="text-[9px] text-slate-400">Inspeção de Portas e Vidros</span>
+                        </div>
+                    </button>
+
+                    <button onclick="toggleCheckItem(this)" class="flex items-center gap-3 p-3 bg-slate-950 hover:bg-slate-850 rounded-xl border border-slate-800/60 text-left transition-all group">
+                        <div class="w-5 h-5 rounded border border-slate-700 bg-slate-900 flex items-center justify-center text-cyan-400 group-hover:border-cyan-500/50"></div>
+                        <div>
+                            <span class="text-xs font-semibold text-white block">Sistemas de Rádio</span>
+                            <span class="text-[9px] text-slate-400">Comunicação e GPS Operacionais</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- COLUNA B: VARREDURA DE SEGURANÇA (SIMULADOR DO LOCAL) -->
+            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-6">
+                <div>
+                    <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Protocolo Antiescuta / Proteção Física</span>
+                    <h3 class="text-xl font-bold text-white mt-0.5">Varredura Preventiva da Sala de Reunião</h3>
+                    <p class="text-xs text-slate-400 mt-1">Simulação tática de inspeção e busca eletrónica ativa antes da entrada da autoridade.</p>
+                </div>
+
+                <!-- SIMULADOR GRÁFICO DA SALA -->
+                <div class="bg-slate-950 rounded-xl border border-slate-800 p-4 relative h-48 flex items-center justify-center">
+                    <!-- Layout da Sala Esquematizado -->
+                    <div class="w-48 h-24 border-2 border-dashed border-slate-800 rounded-xl relative flex items-center justify-center">
+                        <div class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Mesa Principal</div>
+                        
+                        <!-- Ponto 1: Tomadas -->
+                        <button onclick="scanObject('outlet', this)" class="absolute -top-3 left-1/4 w-6 h-6 rounded-full bg-rose-500/20 border border-rose-500 flex items-center justify-center text-[10px] hover:scale-110 transition-all text-rose-300" title="Verificar tomadas por gravadores">
+                            🔌
+                        </button>
+
+                        <!-- Ponto 2: Ar Condicionado -->
+                        <button onclick="scanObject('ac', this)" class="absolute -bottom-3 right-1/4 w-6 h-6 rounded-full bg-rose-500/20 border border-rose-500 flex items-center justify-center text-[10px] hover:scale-110 transition-all text-rose-300" title="Inspecionar saídas de ar">
+                            ❄️
+                        </button>
+
+                        <!-- Ponto 3: Mobiliário (Mesa) -->
+                        <button onclick="scanObject('table', this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-rose-500/20 border border-rose-500 flex items-center justify-center text-[10px] hover:scale-110 transition-all text-rose-300" title="Buscar em fundos de mesas">
+                            🪑
+                        </button>
+                    </div>
+
+                    <!-- Mensagem do Scanner -->
+                    <div class="absolute bottom-2 left-4 right-4 text-center">
+                        <span class="text-[9px] text-slate-500 block uppercase tracking-wider" id="scanner-instruction">Clique nos ícones da sala para iniciar a varredura preventiva.</span>
+                    </div>
+                </div>
+
+                <!-- STATUS DA VARREDURA -->
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+                    <div>
+                        <span class="text-slate-400 block">Status da Varredura:</span>
+                        <span class="font-bold text-amber-400 uppercase tracking-wider text-[11px]" id="scan-status-text">Não Iniciada</span>
+                    </div>
+                    <div class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded font-semibold text-[10px]" id="scan-status-badge">
+                        REQUERIDA
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- INFORMAÇÕES TÉCNICAS E RODAPÉ -->
+    <footer class="bg-slate-950 border-t border-slate-900 py-8 mt-12 text-center text-xs text-slate-500 space-y-2">
+        <p>Aplica-se estritamente à simulação académica e educacional de táticas de trânsito urbano e logística.</p>
+        <p>© 2026 Sistema PVS - Governo Federal (Simulação). Dados simulados em tempo real.</p>
+    </footer>
+
+    <!-- LÓGICA DE INTERATIVIDADE DO PAINEL -->
+    <script>
+        // DADOS SIMULADOS DE AGENDA PARA OS DIAS
+        const agendaData = {
+            seg: [
+                { id: "s1", time: "09:00 - 11:30", title: "Expediente Interno e Despachos", location: "Edifício-Sede do Banco Central (SBS)", targetDest: "bc", icon: "🏢", type: "Interno" },
+                { id: "s2", time: "14:30 - 16:00", title: "Reunião Extraordinária do CMN", location: "Ministério das Finanças (Esplanada dos Ministérios)", targetDest: "fazenda", icon: "🏛️", type: "CMN" }
+            ],
+            ter: [
+                { id: "t1", time: "10:00 - 12:00", title: "Audiência com a Presidência da República", location: "Palácio do Planalto", targetDest: "planalto", icon: "🏛️", type: "Presidencial" },
+                { id: "t2", time: "15:00 - 18:00", title: "Sessão de Análise de Conjuntura Monetária", location: "Edifício-Sede do Banco Central (SBS)", targetDest: "bc", icon: "🏢", type: "COPOM" }
+            ],
+            qua: [
+                { id: "q1", time: "09:30 - 11:00", title: "Reunião de Alinhamento Fiscal", location: "Ministério das Finanças (Esplanada)", targetDest: "fazenda", icon: "🏛️", type: "Fiscal" },
+                { id: "q2", time: "14:00 - 15:30", title: "Apresentação do Relatório de Inflação", location: "Edifício-Sede do Banco Central (SBS)", targetDest: "bc", icon: "🏢", type: "Gabinete" }
+            ]
+        };
+
+        // ESTADO GLOBAL DA APLICAÇÃO
+        const state = {
+            destination: 'bc', // bc, fazenda, planalto
+            selectedDay: 'seg', // seg, ter, qua
+            alerts: {
+                rain: false,
+                protest: false,
+                works: false
+            },
+            checklist: 0, // max 6
+            scanProgress: {
+                outlet: false,
+                ac: false,
+                table: false
+            }
+        };
+
+        // MAPEAR ELEMENTOS GRÁFICOS E COORDENADAS
+        const routesConfig = {
+            bc: {
+                title: "Percurso para: Sede do Banco Central",
+                distTimeNormal: "~4.5 km / 8 min",
+                distTimeAlert: "~6.2 km / 14 min",
+                labelMain: "Eixão Sul (Principal)",
+                labelAlt: "L2 Sul (Emergência)",
+                mainPath: "M 50,150 Q 150,50 300,100 T 550,130",
+                altPath: "M 50,150 Q 150,220 350,180 T 550,130",
+                icon: "🏢",
+                labelDest: "Banco Central"
+            },
+            fazenda: {
+                title: "Percurso para: Ministério das Finanças",
+                distTimeNormal: "~2.8 km / 5 min",
+                distTimeAlert: "~4.1 km / 9 min",
+                labelMain: "Via S1 (Esplanada)",
+                labelAlt: "Via S2 (Acesso Traseiro)",
+                mainPath: "M 50,150 Q 180,30 310,80 T 550,130",
+                altPath: "M 50,150 Q 120,240 320,190 T 550,130",
+                icon: "🏛️",
+                labelDest: "M. Finanças"
+            },
+            planalto: {
+                title: "Percurso para: Palácio do Planalto",
+                distTimeNormal: "~3.9 km / 7 min",
+                distTimeAlert: "~5.5 km / 12 min",
+                labelMain: "Eixo Monumental (S1)",
+                labelAlt: "Via L2 Norte (Alternativa)",
+                mainPath: "M 50,150 Q 140,80 320,110 T 550,130",
+                altPath: "M 50,150 Q 160,200 340,160 T 550,130",
+                icon: "🏛️",
+                labelDest: "Planalto"
+            }
+        };
+
+        // SELECIONAR DIA DA AGENDA
+        function selectAgendaDay(day) {
+            state.selectedDay = day;
+
+            // Atualizar aspeto visual das tabs
+            ['seg', 'ter', 'qua'].forEach(d => {
+                const tab = document.getElementById(`tab-${d}`);
+                if (d === day) {
+                    tab.className = "px-4 py-2 text-left rounded-lg text-sm font-semibold border border-cyan-500/20 bg-cyan-950/20 text-cyan-400 whitespace-nowrap transition-all";
+                } else {
+                    tab.className = "px-4 py-2 text-left rounded-lg text-sm font-semibold border border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-850 whitespace-nowrap transition-all";
+                }
+            });
+
+            // Atualizar o título do dia
+            const dayNames = { seg: "Segunda-feira", ter: "Terça-feira", qua: "Quarta-feira" };
+            document.getElementById('agenda-day-title').innerText = `Compromissos para ${dayNames[day]}`;
+
+            renderAgendaItems();
+        }
+
+        // RENDERIZAR COMPROMISSOS DE AGENDA
+        function renderAgendaItems() {
+            const listContainer = document.getElementById('agenda-list');
+            listContainer.innerHTML = '';
+
+            const items = agendaData[state.selectedDay];
+            items.forEach(item => {
+                const card = document.createElement('div');
+                // Adiciona destaque de borda caso este item represente o destino atualmente ativo no mapa
+                const isActive = item.targetDest === state.destination;
+                const borderClass = isActive ? 'border-cyan-500 bg-slate-950/40 shadow-md shadow-cyan-500/5' : 'border-slate-800 bg-slate-950 hover:bg-slate-850';
+
+                card.className = `p-4 rounded-xl border ${borderClass} cursor-pointer transition-all flex justify-between items-center group`;
+                card.onclick = () => {
+                    setDestination(item.targetDest);
+                    renderAgendaItems(); // Atualizar estado dos cards selecionados
+                };
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="text-2xl">${item.icon}</div>
+                        <div>
+                            <span class="text-[10px] font-bold text-cyan-400 mono">${item.time}</span>
+                            <h4 class="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors mt-0.5">${item.title}</h4>
+                            <p class="text-[10px] text-slate-400 mt-0.5">${item.location}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 text-[9px] font-bold rounded bg-slate-900 text-slate-300 uppercase">${item.type}</span>
+                        <div class="w-4 h-4 rounded-full border border-slate-700 flex items-center justify-center text-xs group-hover:border-cyan-500 transition-all ${isActive ? 'bg-cyan-500 border-cyan-500 text-slate-950' : 'text-slate-500'}">
+                            ${isActive ? '✓' : '→'}
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        // ALTERAR DESTINO DA VIAGEM
+        function setDestination(dest) {
+            state.destination = dest;
+            
+            // Atualizar classes dos botões manuais
+            ['bc', 'fazenda', 'planalto'].forEach(d => {
+                const btn = document.getElementById(`btn-dest-${d}`);
+                if (d === dest) {
+                    btn.classList.add('border-cyan-500', 'bg-cyan-950/20');
+                    btn.classList.remove('border-slate-800');
+                } else {
+                    btn.classList.remove('border-cyan-500', 'bg-cyan-950/20');
+                    btn.classList.add('border-slate-800');
+                }
+            });
+
+            updateDisplay();
+        }
+
+        // TOGGLE ALERTA (CHUVA, PROTESTO, OBRA)
+        function toggleAlert(alertType) {
+            state.alerts[alertType] = !state.alerts[alertType];
+            
+            const btn = document.getElementById(`switch-${alertType}`);
+            const bg = document.getElementById(`toggle-bg-${alertType}`);
+            const dot = document.getElementById(`toggle-dot-${alertType}`);
+
+            if (state.alerts[alertType]) {
+                bg.classList.remove('bg-slate-800');
+                bg.classList.add('bg-cyan-500');
+                dot.classList.remove('bg-slate-500', 'translate-x-0');
+                dot.classList.add('bg-slate-950', 'translate-x-4');
+                btn.classList.add('border-cyan-500/30');
+            } else {
+                bg.classList.remove('bg-cyan-500');
+                bg.classList.add('bg-slate-800');
+                dot.classList.remove('bg-slate-950', 'translate-x-4');
+                dot.classList.add('bg-slate-500', 'translate-x-0');
+                btn.classList.remove('border-cyan-500/30');
+            }
+
+            updateDisplay();
+        }
+
+        // ATUALIZAÇÃO GERAL DO ECRÃ COM REGRAS DE ANTECIPAÇÃO DE CENÁRIOS
+        function updateDisplay() {
+            const config = routesConfig[state.destination];
+            
+            // Atualizar Títulos e Ícones do Mapa
+            document.getElementById('map-dest-title').innerText = config.title;
+            document.getElementById('map-dest-icon').innerText = config.icon;
+            document.getElementById('map-dest-label').innerText = config.labelDest;
+            document.getElementById('label-route-main').innerText = config.labelMain;
+            document.getElementById('label-route-alt').innerText = config.labelAlt;
+
+            // Determinar se há algum alerta ativo
+            const hasAlerts = state.alerts.rain || state.alerts.protest || state.alerts.works;
+            
+            // Atualizar Estatísticas de Distância/Tempo
+            document.getElementById('map-dist-time').innerText = hasAlerts ? config.distTimeAlert : config.distTimeNormal;
+
+            // Mapear Cores das Rotas no Mapa Gráfico
+            const svgRouteMain = document.getElementById('svg-route-main');
+            const svgRouteAlt = document.getElementById('svg-route-alt');
+            
+            svgRouteMain.setAttribute('d', config.mainPath);
+            svgRouteAlt.setAttribute('d', config.altPath);
+
+            // Seletor de cores dependente dos riscos
+            if (hasAlerts) {
+                // Rota Principal fica cinzenta ou amarela devido a atrasos
+                svgRouteMain.setAttribute('stroke', '#64748b'); // Cinzento
+                svgRouteAlt.setAttribute('stroke', '#10b981'); // Verde (Seguro para avançar)
+            } else {
+                svgRouteMain.setAttribute('stroke', '#06b6d4'); // Ciano Ativo
+                svgRouteAlt.setAttribute('stroke', '#64748b'); // Cinzento
+            }
+
+            // Atualizar Caixa de Notificação Tática (Alerta em Tempo Real)
+            const alertBox = document.getElementById('alert-box');
+            const alertIcon = document.getElementById('alert-box-icon');
+            const alertTitle = document.getElementById('alert-box-title');
+            const alertDesc = document.getElementById('alert-box-desc');
+            const statusGlow = document.getElementById('status-glow');
+            const statusText = document.getElementById('status-text');
+
+            if (state.alerts.protest) {
+                alertBox.className = "bg-slate-950 p-4 rounded-xl border border-rose-500/30 flex items-start gap-3 transition-colors duration-300";
+                alertIcon.innerText = "🚨";
+                alertIcon.className = "p-1.5 bg-rose-500/10 text-rose-400 rounded border border-rose-500/20 text-xs";
+                alertTitle.innerText = "BLOQUEIO CRÍTICO: Rota Alternativa Ativada";
+                alertTitle.className = "text-xs font-bold text-rose-400 uppercase";
+                alertDesc.innerText = `Evite a via principal. Devido a manifestações na Esplanada, acione imediatamente a rota alternativa via ${config.labelAlt}.`;
+                statusGlow.className = "w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse";
+                statusText.innerText = "Rota de Alerta Ativa";
+            } else if (state.alerts.works || state.alerts.rain) {
+                alertBox.className = "bg-slate-950 p-4 rounded-xl border border-amber-500/30 flex items-start gap-3 transition-colors duration-300";
+                alertIcon.innerText = "⚠️";
+                alertIcon.className = "p-1.5 bg-amber-500/10 text-amber-400 rounded border border-amber-500/20 text-xs";
+                alertTitle.innerText = "Atenção: Trânsito Lento / Pistas Escorregadias";
+                alertTitle.className = "text-xs font-bold text-amber-400 uppercase";
+                alertDesc.innerText = `Redução da velocidade operacional nas vias de acesso. Recomenda-se acompanhamento tático preventivo de trânsito lento no ${config.labelMain}.`;
+                statusGlow.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse";
+                statusText.innerText = "Trânsito Atenção";
+            } else {
+                alertBox.className = "bg-slate-950 p-4 rounded-xl border border-emerald-500/30 flex items-start gap-3 transition-colors duration-300";
+                alertIcon.innerText = "✔️";
+                alertIcon.className = "p-1.5 bg-emerald-500/10 text-emerald-400 rounded border border-emerald-500/20 text-xs";
+                alertTitle.innerText = "Via Principal Desimpedida";
+                alertTitle.className = "text-xs font-bold text-emerald-400 uppercase";
+                alertDesc.innerText = "Nenhum bloqueio ou lentidão identificados na rota tática principal. Deslocamento normal autorizado.";
+                statusGlow.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+                statusText.innerText = "Operação Ativa";
+            }
+
+            // Atualizar Matriz de Risco (Cores de Perigo)
+            updateRiskMatrix();
+        }
+
+        // CONTROLAR A MATRIZ DE RISCO TÁTICA
+        function updateRiskMatrix() {
+            // Risco Chuva
+            const badgeRain = document.getElementById('badge-risk-rain');
+            const rowRain = document.getElementById('row-risk-rain');
+            const impactRain = document.getElementById('impact-risk-rain');
+            const mitigationRain = document.getElementById('mitigation-risk-rain');
+            
+            if (state.alerts.rain) {
+                badgeRain.className = "px-2 py-0.5 font-bold rounded bg-amber-500/20 text-amber-400 uppercase tracking-wide text-[9px]";
+                badgeRain.innerText = "Médio";
+                rowRain.classList.add('bg-amber-950/5');
+                impactRain.innerText = "Risco de hidroplanagem e lentidão severa nas tesourinhas de acesso.";
+                mitigationRain.innerText = "Reduzir velocidade operacional, ativar limpa-para-brisas.";
+            } else {
+                badgeRain.className = "px-2 py-0.5 font-bold rounded bg-emerald-500/10 text-emerald-400 uppercase tracking-wide text-[9px]";
+                badgeRain.innerText = "Baixo";
+                rowRain.classList.remove('bg-amber-950/5');
+                impactRain.innerText = "Sem impacto imediato. Velocidade normal da via mantida.";
+                mitigationRain.innerText = "Manter velocidade de segurança padrão.";
+            }
+
+            // Risco Protesto
+            const badgeProtest = document.getElementById('badge-risk-protest');
+            const rowProtest = document.getElementById('row-risk-protest');
+            const impactProtest = document.getElementById('impact-risk-protest');
+            const mitigationProtest = document.getElementById('mitigation-risk-protest');
+
+            if (state.alerts.protest) {
+                badgeProtest.className = "px-2 py-0.5 font-bold rounded bg-rose-500/20 text-rose-400 uppercase tracking-wide text-[9px]";
+                badgeProtest.innerText = "Crítico";
+                rowProtest.classList.add('bg-rose-950/5');
+                impactProtest.innerText = "Vias de acesso bloqueadas por manifestações ativas de populares.";
+                mitigationProtest.innerText = `Bloquear acesso via S1. Usar desvio traseiro pela Via S2.`;
+            } else {
+                badgeProtest.className = "px-2 py-0.5 font-bold rounded bg-slate-800 text-slate-500 uppercase tracking-wide text-[9px]";
+                badgeProtest.innerText = "Nulo";
+                rowProtest.classList.remove('bg-rose-950/5');
+                impactProtest.innerText = "Nenhum evento político ou sindical mapeado para hoje.";
+                mitigationProtest.innerText = "Ponto de recolha e desembarque oficial livre.";
+            }
+
+            // Risco Obras
+            const badgeWorks = document.getElementById('badge-risk-works');
+            const rowWorks = document.getElementById('row-risk-works');
+            const impactWorks = document.getElementById('impact-risk-works');
+            const mitigationWorks = document.getElementById('mitigation-risk-works');
+
+            if (state.alerts.works) {
+                badgeWorks.className = "px-2 py-0.5 font-bold rounded bg-amber-500/20 text-amber-400 uppercase tracking-wide text-[9px]";
+                badgeWorks.innerText = "Médio";
+                rowWorks.classList.add('bg-amber-950/5');
+                impactWorks.innerText = "Estreitamento de faixas e asfalto irregular no percurso principal.";
+                mitigationWorks.innerText = "Dobrar a atenção nas manobras, acionar suspensão ativa do veículo.";
+            } else {
+                badgeWorks.className = "px-2 py-0.5 font-bold rounded bg-slate-800 text-slate-500 uppercase tracking-wide text-[9px]";
+                badgeWorks.innerText = "Baixo";
+                rowWorks.classList.remove('bg-amber-950/5');
+                impactWorks.innerText = "Intervenções regulares do DER-DF sem retenções críticas.";
+                mitigationWorks.innerText = "Manter rotas originais estabelecidas.";
+            }
+        }
+
+        // LISTA DE VERIFICAÇÃO DO VEÍCULO (CHECKLIST)
+        function toggleCheckItem(elem) {
+            const checkBox = elem.querySelector('div');
+            const isChecked = checkBox.innerHTML !== "";
+
+            if (!isChecked) {
+                // Marcar item como verificado (check)
+                checkBox.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3.5 h-3.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                `;
+                checkBox.className = "w-5 h-5 rounded border border-cyan-500 bg-cyan-950 flex items-center justify-center text-cyan-400";
+                elem.classList.add('border-cyan-500/20');
+                state.checklist++;
+            } else {
+                // Desmarcar item
+                checkBox.innerHTML = "";
+                checkBox.className = "w-5 h-5 rounded border border-slate-700 bg-slate-900 flex items-center justify-center text-cyan-400 group-hover:border-cyan-500/50";
+                elem.classList.remove('border-cyan-500/20');
+                state.checklist--;
+            }
+
+            // Atualizar barra de progresso
+            const pct = Math.round((state.checklist / 6) * 100);
+            document.getElementById('progress-percent').innerText = `${pct}% Concluído`;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+        }
+
+        // SIMULADOR DE VARREDURA DO LOCAL
+        function scanObject(objectType, elem) {
+            state.scanProgress[objectType] = true;
+            
+            // Marcar objeto como limpo/inspeccionado
+            elem.className = "absolute w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center text-[10px] scale-110 transition-all text-emerald-300";
+            elem.title = "Local limpo e seguro";
+
+            // Verificar progresso do scanner
+            const allClean = state.scanProgress.outlet && state.scanProgress.ac && state.scanProgress.table;
+            
+            const scanStatusText = document.getElementById('scan-status-text');
+            const scanStatusBadge = document.getElementById('scan-status-badge');
+            const scannerInst = document.getElementById('scanner-instruction');
+
+            if (allClean) {
+                scanStatusText.innerText = "Ambiente Seguro";
+                scanStatusText.className = "font-bold text-emerald-400 uppercase tracking-wider text-[11px]";
+                scanStatusBadge.innerText = "LIMPO";
+                scanStatusBadge.className = "px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded font-semibold text-[10px]";
+                scannerInst.innerText = "✓ Varredura física e eletrónica concluída com sucesso. Nenhuma anomalia detetada.";
+                scannerInst.className = "text-[9px] text-emerald-400 block uppercase tracking-wider font-semibold";
+            } else {
+                scanStatusText.innerText = "Inspecionando...";
+                scanStatusText.className = "font-bold text-amber-400 uppercase tracking-wider text-[11px]";
+                scanStatusBadge.innerText = "PARCIAL";
+                scannerInst.innerText = "Inspeção em andamento. Continue a analisar os pontos marcados a vermelho.";
+            }
+        }
+
+        // EXECUÇÃO INICIAL DO MAPA NO ARRANQUE
+        window.onload = function() {
+            // Inicializa a agenda no dia Seg
+            selectAgendaDay('seg');
+            updateDisplay();
+        };
+    </script>
+</body>
+</html>
