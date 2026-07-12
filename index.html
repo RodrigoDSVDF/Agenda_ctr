@@ -51,6 +51,8 @@
             -moz-osx-font-smoothing: grayscale;
             line-height: 1.5;
             overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         body {
@@ -92,6 +94,14 @@
             }
         }
 
+        @media (max-width: 899px) {
+            .sidebar {
+                position: sticky;
+                top: 0;
+                z-index: 20;
+            }
+        }
+
         .sidebar-header {
             padding: 20px 24px;
             border-bottom: 1px solid var(--border);
@@ -109,11 +119,6 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
-        }
-
-        .icon-badge:hover {
-            background: rgba(245, 158, 11, 0.15);
-            border-color: var(--amber);
         }
 
         .sidebar-header h1 {
@@ -213,7 +218,6 @@
             background: var(--amber-soft);
             color: var(--amber);
         }
-
         .nav-btn.active::before {
             background: var(--amber);
         }
@@ -244,13 +248,14 @@
             flex: 1;
             min-width: 0;
             padding: 20px;
-            overflow-y: auto;
+            overflow-y: visible;
             background: var(--bg);
         }
 
         @media (min-width: 900px) {
             .main {
                 padding: 32px 36px;
+                overflow-y: auto;
             }
         }
 
@@ -412,12 +417,6 @@
             box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.15);
         }
 
-        .timeline-dot.purple {
-            background: var(--purple);
-            border-color: var(--purple);
-            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.15);
-        }
-
         .timeline-card {
             background: var(--bg);
             border: 1px solid var(--border-soft);
@@ -506,17 +505,6 @@
         .btn-amber:hover {
             background: var(--amber-hover);
             box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
-            transform: translateY(-1px);
-        }
-
-        .btn-blue {
-            background: var(--blue);
-            color: var(--bg);
-        }
-
-        .btn-blue:hover {
-            background: #93c5fd;
-            box-shadow: 0 2px 8px rgba(96, 165, 250, 0.3);
             transform: translateY(-1px);
         }
 
@@ -744,6 +732,12 @@
             margin: 20px 0;
         }
 
+        @media (max-width: 600px) {
+            .map-box {
+                height: 200px;
+            }
+        }
+
         .map-box svg {
             width: 100%;
             height: 100%;
@@ -872,11 +866,29 @@
             flex-shrink: 0;
         }
 
+        .via-table-wrap {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+        }
+
+        @media (max-width: 899px) {
+            .via-table-wrap {
+                max-height: none;
+                overflow-y: visible;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .via-table-wrap {
+                max-height: 240px;
+                overflow-y: auto;
+            }
+        }
+
         .via-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 11px;
-            margin-top: 8px;
         }
 
         .via-table th {
@@ -888,6 +900,10 @@
             text-transform: uppercase;
             font-size: 9px;
             letter-spacing: 0.08em;
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 1;
         }
 
         .via-table td {
@@ -957,21 +973,6 @@
             border: 1px solid var(--blue-border);
         }
 
-        .marcador-colchete {
-            color: #f59e0b;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            font-size: 10px;
-        }
-
-        .marcador-chave {
-            color: #a78bfa;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            font-size: 10px;
-        }
-
-        /* Scrollbar styling */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -998,9 +999,6 @@
             }
             .page-header h2 {
                 font-size: 20px;
-            }
-            .map-box {
-                height: 200px;
             }
             .map-overlay .big {
                 font-size: 18px;
@@ -1067,7 +1065,7 @@
                     <svg class="icon" style="color:var(--amber); margin-top:2px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v4M12 8h.01"/></svg>
                     <div>
                         <b>Rotas de Referência — Sede Corporativa</b>
-                        Dados de distância e vias para simulação. Marcadores: <span class="marcador-colchete">[colchetes]</span> = condições normais/atuais, <span class="marcador-chave">{chaves}</span> = trânsito normal.
+                        Dados de distância e vias para simulação de deslocamentos em diferentes condições de trânsito e clima.
                     </div>
                 </div>
 
@@ -1137,7 +1135,7 @@
 
                         <div class="field" style="margin-bottom:0;">
                             <label class="field-label">Vias Disponíveis</label>
-                            <div style="max-height:240px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-md);">
+                            <div class="via-table-wrap">
                                 <table class="via-table" id="viaTable">
                                     <thead><tr><th>Via</th><th>Dist.</th><th>Cond.</th></tr></thead>
                                     <tbody id="viaTableBody"></tbody>
@@ -1193,19 +1191,15 @@
     </div>
 
     <script>
-        // -------------------------------------------------------------------
-        // DADOS DE REFERÊNCIA — Demonstração de rotas e vias
-        // Marcadores: [colchetes] = normal/atual, {chaves} = normal
-        // -------------------------------------------------------------------
         const destinosData = {
             aeroporto: {
                 title: 'Sede ➔ Aeroporto Internacional de Brasília',
                 destination: 'Aeroporto Internacional de Brasília',
                 destCoord: { x: 480, y: 60 },
                 vias: [
-                    { via: 'DF-047 e Eixo Rodoviário de Brasília', dist: 12.5, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'colchete', path: 'M 280,170 C 320,140 400,90 480,60' },
-                    { via: 'DF-047 e ERL – Sul', dist: 12.4, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 310,145 390,95 480,60' },
-                    { via: 'DF-047 e ERW – Sul', dist: 13.0, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 330,150 410,100 480,60' },
+                    { via: 'DF-047 e Eixo Rodoviário de Brasília', dist: 12.5, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', path: 'M 280,170 C 320,140 400,90 480,60' },
+                    { via: 'DF-047 e ERL – Sul', dist: 12.4, cond: 'normal', tag: '', path: 'M 280,170 C 310,145 390,95 480,60' },
+                    { via: 'DF-047 e ERW – Sul', dist: 13.0, cond: 'normal', tag: '', path: 'M 280,170 C 330,150 410,100 480,60' },
                 ]
             },
             planalto: {
@@ -1213,9 +1207,9 @@
                 destination: 'Palácio do Planalto',
                 destCoord: { x: 380, y: 100 },
                 vias: [
-                    { via: 'Eixo Monumental', dist: 3.7, cond: 'atual', tag: 'Trajeto mais rápido agora nas condições atuais do trânsito', marcador: 'colchete', path: 'M 280,170 Q 340,120 380,100' },
-                    { via: 'Eixo Rodoviário de Brasília e Eixo Monumental', dist: 4.1, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 Q 330,130 380,100' },
-                    { via: 'Estr. Parque das Nações (Via L4)', dist: 7.2, cond: 'normal', tag: '10 min', marcador: 'colchete', tempoNominalMinutos: 10, path: 'M 280,170 C 350,200 400,140 380,100' },
+                    { via: 'Eixo Monumental', dist: 3.7, cond: 'atual', tag: 'Trajeto mais rápido agora nas condições atuais do trânsito', path: 'M 280,170 Q 340,120 380,100' },
+                    { via: 'Eixo Rodoviário de Brasília e Eixo Monumental', dist: 4.1, cond: 'normal', tag: '', path: 'M 280,170 Q 330,130 380,100' },
+                    { via: 'Estr. Parque das Nações (Via L4)', dist: 7.2, cond: 'normal', tag: '10 min', tempoNominalMinutos: 10, path: 'M 280,170 C 350,200 400,140 380,100' },
                 ]
             },
             congresso: {
@@ -1223,18 +1217,18 @@
                 destination: 'Congresso Nacional',
                 destCoord: { x: 400, y: 90 },
                 vias: [
-                    { via: 'Eixo Monumental / Via S1', dist: 3.5, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'colchete', path: 'M 280,170 Q 350,115 400,90' },
-                    { via: 'Eixo Rodoviário de Brasília e Eixo Monumental / Via S1', dist: 3.9, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 Q 340,120 400,90' },
+                    { via: 'Eixo Monumental / Via S1', dist: 3.5, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', path: 'M 280,170 Q 350,115 400,90' },
+                    { via: 'Eixo Rodoviário de Brasília e Eixo Monumental / Via S1', dist: 3.9, cond: 'normal', tag: '', path: 'M 280,170 Q 340,120 400,90' },
                 ]
             },
             universidade: {
-                title: 'Sede ➔ Universidade Corporativa',
-                destination: 'Universidade Corporativa',
+                title: 'Sede ➔ Universidade do Banco Central',
+                destination: 'Universidade do Banco Central (UniBACEN)',
                 destCoord: { x: 420, y: 120 },
                 vias: [
-                    { via: 'Via S3', dist: 4.0, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'chave', path: 'M 280,170 Q 360,170 420,120' },
-                    { via: 'Estr. Parque das Nações (Via L4) / Via L4 South', dist: 4.8, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 350,200 400,150 420,120' },
-                    { via: 'SES 801 e Estr. Parque das Nações (Via L4) / Via L4 South', dist: 5.0, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 340,195 410,145 420,120' },
+                    { via: 'Via S3', dist: 4.0, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', path: 'M 280,170 Q 360,170 420,120' },
+                    { via: 'Estr. Parque das Nações (Via L4) / Via L4 South', dist: 4.8, cond: 'normal', tag: '', path: 'M 280,170 C 350,200 400,150 420,120' },
+                    { via: 'SES 801 e Estr. Parque das Nações (Via L4) / Via L4 South', dist: 5.0, cond: 'normal', tag: '', path: 'M 280,170 C 340,195 410,145 420,120' },
                 ]
             },
             piantas: {
@@ -1242,9 +1236,9 @@
                 destination: 'Piantas Bistrô',
                 destCoord: { x: 440, y: 140 },
                 vias: [
-                    { via: 'Via L2 Sul', dist: 5.7, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'chave', path: 'M 280,170 Q 370,180 440,140' },
-                    { via: 'ERL – Sul', dist: 6.7, cond: 'normal', tag: '', marcador: 'chave', path: 'M 280,170 Q 380,175 440,140' },
-                    { via: 'ERW – Sul', dist: 6.9, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 Q 390,170 440,140' },
+                    { via: 'Via L2 Sul', dist: 5.7, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', path: 'M 280,170 Q 370,180 440,140' },
+                    { via: 'ERL – Sul', dist: 6.7, cond: 'normal', tag: '', path: 'M 280,170 Q 380,175 440,140' },
+                    { via: 'ERW – Sul', dist: 6.9, cond: 'normal', tag: '', path: 'M 280,170 Q 390,170 440,140' },
                 ]
             },
             rubaiyat: {
@@ -1252,8 +1246,8 @@
                 destination: 'Rubaiyat',
                 destCoord: { x: 460, y: 100 },
                 vias: [
-                    { via: 'Estr. Parque das Nações (Via L4) / Via L4 South', dist: 5.6, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', marcador: 'colchete', path: 'M 280,170 C 360,200 430,130 460,100' },
-                    { via: 'Via S3 e Estr. Parque das Nações (Via L4) / Via L4 South', dist: 6.2, cond: 'normal', tag: '', marcador: 'colchete', path: 'M 280,170 C 370,195 440,125 460,100' },
+                    { via: 'Estr. Parque das Nações (Via L4) / Via L4 South', dist: 5.6, cond: 'normal', tag: 'Trajeto mais rápido, trânsito normal', path: 'M 280,170 C 360,200 430,130 460,100' },
+                    { via: 'Via S3 e Estr. Parque das Nações (Via L4) / Via L4 South', dist: 6.2, cond: 'normal', tag: '', path: 'M 280,170 C 370,195 440,125 460,100' },
                 ]
             },
         };
@@ -1263,7 +1257,7 @@
             { time: '09:00', title: 'Deslocamento para o Palácio do Planalto', desc: 'Reunião institucional.', destKey: 'planalto' },
             { time: '10:30', title: 'Deslocamento para o Congresso Nacional', desc: 'Sessão e visita guiada.', destKey: 'congresso' },
             { time: '12:15', title: 'Almoço no Piantas Bistrô', desc: 'Almoço de negócios.', destKey: 'piantas' },
-            { time: '14:00', title: 'Universidade Corporativa', desc: 'Palestra e evento acadêmico.', destKey: 'universidade' },
+            { time: '14:00', title: 'Universidade do Banco Central (UniBACEN)', desc: 'Palestra e evento acadêmico.', destKey: 'universidade' },
             { time: '16:30', title: 'Jantar no Rubaiyat', desc: 'Encerramento com parceiros.', destKey: 'rubaiyat' },
             { time: '19:00', title: 'Deslocamento para o Aeroporto', desc: 'Embarque e retorno.', destKey: 'aeroporto' },
         ];
@@ -1416,12 +1410,10 @@
             const tbody = document.getElementById('viaTableBody');
             tbody.innerHTML = vias.map((v, i) => {
                 const activeClass = i === state.viaIndex ? ' active-row' : '';
-                const marcadorSymbol = v.marcador === 'colchete' ? '[ ]' : '{ }';
-                const marcadorClass = v.marcador === 'colchete' ? 'marcador-colchete' : 'marcador-chave';
                 const tagHtml = v.tag ? '<span class="tag ' + (v.cond === 'atual' ? 'tag-current' : 'tag-normal') + '">' + v.tag + '</span>' : '';
                 return `
                     <tr class="${activeClass}" onclick="selectVia(${i})">
-                        <td><span class="${marcadorClass}">${marcadorSymbol}</span> ${v.via} ${tagHtml}</td>
+                        <td>${v.via} ${tagHtml}</td>
                         <td class="dist-col">${v.dist} km</td>
                         <td class="cond-col">${v.cond}</td>
                     </tr>`;
