@@ -682,8 +682,6 @@
         };
 
         let map = null;
-        let directionsService = null;
-        let directionsRenderer = null;
 
         // Estilo escuro para o Google Maps
         const mapDarkStyles = [
@@ -710,12 +708,6 @@
                 zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM }
             });
 
-            directionsService = new google.maps.DirectionsService();
-            directionsRenderer = new google.maps.DirectionsRenderer({
-                polylineOptions: { strokeColor: "#f59e0b", strokeWeight: 6, strokeOpacity: 0.9 },
-                suppressMarkers: false
-            });
-            directionsRenderer.setMap(map);
         }
 
         function setTab(tab) {
@@ -839,6 +831,11 @@
         function hideRouteError() {
             document.getElementById('routeError').classList.add('hidden');
         }
+        let routePolylines = [];
+        function clearRoute() {
+            routePolylines.forEach(l => l.setMap(null));
+            routePolylines = [];
+        }
         function clearFallback() {
             if (fallbackLine) { fallbackLine.setMap(null); fallbackLine = null; }
             fallbackMarkers.forEach(m => m.setMap(null));
@@ -846,7 +843,6 @@
         }
         function drawFallback(origin, dest) {
             clearFallback();
-            directionsRenderer.setMap(null);
             fallbackLine = new google.maps.Polyline({
                 path: [origin, dest], map,
                 strokeColor: '#f59e0b', strokeOpacity: 0.9, strokeWeight: 4,
@@ -867,8 +863,8 @@
             showRouteError('Falha de autenticação da chave do Google Maps. Confira se a chave está correta e se o domínio atual está liberado nas restrições.');
         };
 
-        function calculateAndDisplayRoute() {
-            if (!directionsService || !directionsRenderer) {
+        async function calculateAndDisplayRoute() {
+            if (!map) {
                 showRouteError('O Google Maps ainda não carregou. Verifique a chave da API na linha do <script> e recarregue a página.');
                 return;
             }
@@ -878,28 +874,48 @@
 
             const origin = new google.maps.LatLng(SEDE_COORD.lat, SEDE_COORD.lng);
             const dest = new google.maps.LatLng(destino.destCoord.lat, destino.destCoord.lng);
+            const myDest = state.destKey; // evita sobrescrever se o usuário trocar de destino rápido
 
-            directionsService.route(
-                { origin, destination: dest, travelMode: google.maps.TravelMode.DRIVING },
-                (result, status) => {
-                    if (status === 'OK') {
-                        hideRouteError();
-                        clearFallback();
-                        directionsRenderer.setMap(map);
-                        directionsRenderer.setDirections(result);
-                        return;
-                    }
-                    console.error('Directions falhou:', status);
-                    const msgs = {
-                        REQUEST_DENIED: 'Directions API negada (REQUEST_DENIED). Habilite a Directions API (ou Routes API) no projeto do Google Cloud e libere-a nas restrições da chave.',
-                        OVER_QUERY_LIMIT: 'Limite de requisições excedido (OVER_QUERY_LIMIT). Verifique a cota e o faturamento do projeto.',
-                        ZERO_RESULTS: 'Nenhuma rota encontrada entre a sede e o destino.',
-                        NOT_FOUND: 'Origem ou destino não encontrado.',
-                    };
-                    showRouteError((msgs[status] || 'Erro ao traçar a rota: ' + status) + ' Exibindo linha reta de referência.');
-                    drawFallback(origin, dest);
+            try {
+                const { Route } = await google.maps.importLibrary('routes');
+                const { routes } = await Route.computeRoutes({
+                    origin: SEDE_COORD,
+                    destination: destino.destCoord,
+                    travelMode: 'DRIVING',
+                    fields: ['path', 'viewport', 'distanceMeters', 'durationMillis'],
+                });
+
+                if (myDest !== state.destKey) return;
+                if (!routes || !routes.length) throw new Error('ZERO_RESULTS');
+
+                hideRouteError();
+                clearFallback();
+                clearRoute();
+                routePolylines = routes[0].createPolylines();
+                routePolylines.forEach(l => {
+                    l.setOptions({ strokeColor: '#f59e0b', strokeWeight: 6, strokeOpacity: 0.9 });
+                    l.setMap(map);
+                });
+                fallbackMarkers = [
+                    new google.maps.Marker({ position: origin, map, label: 'A' }),
+                    new google.maps.Marker({ position: dest, map, label: 'B' })
+                ];
+                if (routes[0].viewport) map.fitBounds(routes[0].viewport);
+            } catch (err) {
+                console.error('Routes falhou:', err);
+                const text = String((err && err.message) || err);
+                let msg = 'Erro ao traçar a rota: ' + text;
+                if (/PERMISSION_DENIED|REQUEST_DENIED|not enabled|not activated|403/i.test(text)) {
+                    msg = 'Routes API negada. No Google Cloud Console, habilite a "Routes API" no projeto da chave e inclua-a nas restrições de API da chave.';
+                } else if (/ZERO_RESULTS/i.test(text)) {
+                    msg = 'Nenhuma rota encontrada entre a sede e o destino.';
+                } else if (/OVER_QUERY_LIMIT|RESOURCE_EXHAUSTED|429/i.test(text)) {
+                    msg = 'Limite de requisições excedido. Verifique a cota e o faturamento do projeto.';
                 }
-            );
+                clearRoute();
+                showRouteError(msg + ' Exibindo linha reta de referência.');
+                drawFallback(origin, dest);
+            }
         }
 
         function renderRouteSimulation() {
