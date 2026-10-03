@@ -298,8 +298,9 @@
         }
 
         /* CHECKLIST DE VIATURAS */
-        .checklist-grid { grid-template-columns: 1fr; align-items: start; }
-        @media (min-width: 1000px) { .checklist-grid { grid-template-columns: repeat(2, 1fr); } }
+        .checklist-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: start; }
+        .checklist-grid .card { padding: 22px; }
+        .checklist-grid .veh-head { flex-wrap: wrap; }
 
         .overall-chip {
             display: flex; align-items: center; gap: 10px;
@@ -551,7 +552,7 @@
                 <div class="page-header">
                     <div>
                         <h2>Checklist de Preparação das Viaturas</h2>
-                        <p>Verificação lado a lado das viaturas antes de iniciar os deslocamentos do dia.</p>
+                        <p>Verificação lado a lado do Haval e dos Corollas 01, 02 e 03 antes de iniciar os deslocamentos do dia.</p>
                     </div>
                     <div class="overall-chip" id="checklistOverall"></div>
                 </div>
@@ -564,7 +565,7 @@
         IMPORTANTE: substitua SUA_CHAVE_AQUI pela sua chave da Google Maps API
         e restrinja a chave por referenciador HTTP no Google Cloud Console.
     -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_AQUI&callback=initMap&libraries=places" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBU9dvL8v0xipqvWUXl5aldka-rm48cmOQ&callback=initMap&libraries=places" async defer></script>
 
     <script>
         // Coordenadas aproximadas reais (Brasília)
@@ -643,8 +644,10 @@
 
         // Viaturas exibidas lado a lado no checklist
         const veiculos = [
-            { id: 'v01', num: '01', nome: 'Viatura 01', modelo: 'Haval' },
-            { id: 'v02', num: '02', nome: 'Viatura 02', modelo: 'Toyota Corolla' },
+            { id: 'haval', num: 'HV', nome: 'Haval', modelo: 'GWM Haval' },
+            { id: 'cor01', num: '01', nome: 'Corolla 01', modelo: 'Toyota Corolla' },
+            { id: 'cor02', num: '02', nome: 'Corolla 02', modelo: 'Toyota Corolla' },
+            { id: 'cor03', num: '03', nome: 'Corolla 03', modelo: 'Toyota Corolla' },
         ];
 
         const checklistGroups = [
