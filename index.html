@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Painel de Antecipação de Rotas</title>
-    
+
     <!-- Fontes Profissionais -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,11 +42,7 @@
             --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         html, body {
             height: 100%;
@@ -141,7 +137,7 @@
         @media (min-width: 700px) { .page-header { flex-direction: row; justify-content: space-between; align-items: flex-start; } }
         .page-header h2 { font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.02em; line-height: 1.2; }
         .page-header p { font-size: 13px; color: var(--text-dim); margin: 8px 0 0; max-width: 55ch; line-height: 1.6; }
-        
+
         .date-chip {
             display: flex; align-items: center; gap: 8px;
             background: var(--panel); border: 1px solid var(--border);
@@ -197,7 +193,7 @@
             transition: var(--transition);
         }
         .timeline-card:hover { border-color: rgba(148, 163, 184, 0.25); transform: translateY(-2px); box-shadow: var(--shadow-md); }
-        
+
         .timeline-time {
             font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
             color: var(--amber); background: var(--amber-soft); padding: 5px 12px; border-radius: 6px;
@@ -217,6 +213,8 @@
         }
         .btn-amber { background: var(--amber); color: var(--bg); }
         .btn-amber:hover { background: var(--amber-hover); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); transform: translateY(-1px); }
+        .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
+        .btn-ghost:hover { color: var(--text); border-color: rgba(148, 163, 184, 0.4); }
 
         /* SUMMARY LIST */
         .summary-row {
@@ -245,7 +243,7 @@
         .speed-box { background: var(--bg); border: 1px solid var(--border-soft); border-radius: var(--radius-md); padding: 20px; }
         .speed-box .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .speed-box .value { font-family: 'JetBrains Mono', monospace; font-weight: 900; color: var(--amber); font-size: 18px; }
-        
+
         input[type=range] { width: 100%; -webkit-appearance: none; height: 6px; border-radius: 3px; background: var(--panel-2); outline: none; cursor: pointer; }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
@@ -276,7 +274,7 @@
         }
 
         .map-box {
-            height: 400px; 
+            height: 400px;
             background: var(--bg); border: 1px solid var(--border-soft);
             border-radius: var(--radius-lg); position: relative; overflow: hidden; margin: 24px 0;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
@@ -299,12 +297,54 @@
             font-size: 12px; color: var(--amber); line-height: 1.5;
         }
 
-        /* CHECKLIST */
+        /* CHECKLIST DE VIATURAS */
+        .checklist-grid { grid-template-columns: 1fr; align-items: start; }
+        @media (min-width: 1000px) { .checklist-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        .overall-chip {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--panel); border: 1px solid var(--border);
+            padding: 12px 18px; border-radius: var(--radius-md);
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; white-space: nowrap;
+            box-shadow: var(--shadow-sm);
+        }
+        .overall-chip b { color: var(--amber); }
+
+        .veh-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+        .veh-id { display: flex; align-items: center; gap: 14px; }
+        .veh-badge {
+            width: 44px; height: 44px; border-radius: var(--radius-md);
+            background: var(--amber-soft); border: 1px solid var(--amber-border); color: var(--amber);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 15px;
+        }
+        .veh-id h3 { font-size: 16px; font-weight: 800; letter-spacing: -0.01em; }
+        .veh-id p { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+        .veh-status {
+            font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+            padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border);
+            color: var(--text-dim); background: var(--bg); white-space: nowrap;
+        }
+        .veh-status.ready { color: var(--emerald); background: var(--emerald-soft); border-color: var(--emerald-border); }
+
+        .progress-wrap { margin-bottom: 24px; }
+        .progress-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-bottom: 8px; font-weight: 600; }
+        .progress-meta .pct { font-family: 'JetBrains Mono', monospace; color: var(--amber); font-weight: 800; }
+        .progress-bar { height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--amber); border-radius: 3px; transition: width 0.3s ease; }
+        .progress-fill.complete { background: var(--emerald); }
+
+        .check-group-title {
+            font-size: 10px; font-weight: 800; color: var(--text-dimmer);
+            text-transform: uppercase; letter-spacing: 0.1em; margin: 20px 0 10px;
+        }
+        .check-group-title.first { margin-top: 0; }
+
         .checklist-item {
-            width: 100%; display: flex; align-items: center; gap: 16px; padding: 18px;
+            width: 100%; display: flex; align-items: center; gap: 16px; padding: 14px 16px;
             background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md);
             text-align: left; cursor: pointer; color: var(--text); font-size: 13px; font-weight: 500;
-            margin-bottom: 12px; transition: var(--transition); letter-spacing: 0.01em;
+            margin-bottom: 8px; transition: var(--transition); letter-spacing: 0.01em; font-family: inherit;
         }
         .checklist-item:hover { border-color: rgba(148, 163, 184, 0.3); background: rgba(15, 23, 42, 0.6); }
         .checklist-item .dot { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #475569; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
@@ -312,6 +352,8 @@
         .checklist-item.done .dot { border-color: var(--emerald); background: rgba(52, 211, 153, 0.15); }
         .checklist-item.done .dot::after { content: '✓'; color: var(--emerald); font-size: 14px; font-weight: 900; }
         .checklist-item.done span.label { color: var(--text-dim); text-decoration: line-through; text-decoration-color: rgba(148, 163, 184, 0.4); }
+
+        .veh-foot { display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
 
         .hidden { display: none !important; }
         svg.icon { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
@@ -508,24 +550,26 @@
             <section id="tabChecklist" class="hidden">
                 <div class="page-header">
                     <div>
-                        <h2>Checklist de Preparação</h2>
-                        <p>Etapas de verificação e segurança antes de iniciar os deslocamentos do dia.</p>
+                        <h2>Checklist de Preparação das Viaturas</h2>
+                        <p>Verificação lado a lado das viaturas antes de iniciar os deslocamentos do dia.</p>
                     </div>
+                    <div class="overall-chip" id="checklistOverall"></div>
                 </div>
-                <div class="card" style="max-width: 640px;">
-                    <div id="checklistBox"></div>
-                </div>
+                <div class="grid checklist-grid" id="checklistBox"></div>
             </section>
         </main>
     </div>
 
-    <!-- Script do Google Maps com a sua Chave de API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBU9dvL8v0xipqvWUXl5aldka-rm48cmOQ&callback=initMap&libraries=places" async defer></script>
-    
+    <!--
+        IMPORTANTE: substitua SUA_CHAVE_AQUI pela sua chave da Google Maps API
+        e restrinja a chave por referenciador HTTP no Google Cloud Console.
+    -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_AQUI&callback=initMap&libraries=places" async defer></script>
+
     <script>
         // Coordenadas aproximadas reais (Brasília)
         const SEDE_COORD = { lat: -15.7942, lng: -47.8825 }; // Sede BCB approx
-        
+
         const destinosData = {
             aeroporto: {
                 title: 'Sede ➔ Aeroporto Internacional de Brasília',
@@ -597,16 +641,30 @@
             { time: '19:00', title: 'Deslocamento para o Aeroporto', desc: 'Embarque e retorno.', destKey: 'aeroporto' },
         ];
 
-        const checklistItems = {
-            veiculo: 'Inspeção completa do veículo',
-            combustivel: 'Nível de combustível verificado',
-            comunicacao: 'Equipamento de comunicação testado',
-            documentacao: 'Documentação da viagem em ordem',
-            rotaConfirmada: 'Rotas do dia revisadas e confirmadas',
-            transitoVerificado: 'Condições de trânsito monitoradas',
-            climaVerificado: 'Previsão do tempo consultada',
-            varreduraDestino: 'Varredura no local de destino',
-        };
+        // Viaturas exibidas lado a lado no checklist
+        const veiculos = [
+            { id: 'v01', num: '01', nome: 'Viatura 01', modelo: 'Haval' },
+            { id: 'v02', num: '02', nome: 'Viatura 02', modelo: 'Toyota Corolla' },
+        ];
+
+        const checklistGroups = [
+            { title: 'Veículo', items: [
+                ['inspecao', 'Inspeção completa do veículo'],
+                ['combustivel', 'Nível de combustível verificado'],
+                ['pneus', 'Pneus e calibragem conferidos'],
+                ['fluidos', 'Óleo, água e freios verificados'],
+            ]},
+            { title: 'Comunicação e documentação', items: [
+                ['comunicacao', 'Equipamento de comunicação testado'],
+                ['documentacao', 'Documentação da viagem em ordem'],
+            ]},
+            { title: 'Rota e segurança', items: [
+                ['rotaConfirmada', 'Rotas do dia revisadas e confirmadas'],
+                ['transitoVerificado', 'Condições de trânsito monitoradas'],
+                ['climaVerificado', 'Previsão do tempo consultada'],
+                ['varreduraDestino', 'Varredura no local de destino'],
+            ]},
+        ];
 
         let state = {
             tab: 'agenda',
@@ -623,7 +681,7 @@
         let directionsService = null;
         let directionsRenderer = null;
 
-        // Estilo escuro para o Google Maps (Dark Mode Array)
+        // Estilo escuro para o Google Maps
         const mapDarkStyles = [
             { elementType: "geometry", stylers: [{ color: "#0f172a" }] },
             { elementType: "labels.text.stroke", stylers: [{ color: "#0f172a" }] },
@@ -645,18 +703,12 @@
                 styles: mapDarkStyles,
                 disableDefaultUI: true,
                 zoomControl: true,
-                zoomControlOptions: {
-                    position: google.maps.ControlPosition.RIGHT_BOTTOM
-                }
+                zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM }
             });
 
             directionsService = new google.maps.DirectionsService();
             directionsRenderer = new google.maps.DirectionsRenderer({
-                polylineOptions: {
-                    strokeColor: "#f59e0b",
-                    strokeWeight: 6,
-                    strokeOpacity: 0.9
-                },
+                polylineOptions: { strokeColor: "#f59e0b", strokeWeight: 6, strokeOpacity: 0.9 },
                 suppressMarkers: false
             });
             directionsRenderer.setMap(map);
@@ -670,8 +722,7 @@
             document.getElementById('navAgenda').classList.toggle('active', tab === 'agenda');
             document.getElementById('navRotas').classList.toggle('active', tab === 'rotas');
             document.getElementById('navChecklist').classList.toggle('active', tab === 'checklist');
-            
-            // Garante que o mapa seja redimensionado e a rota desenhada ao abrir a aba
+
             if (tab === 'rotas' && map) {
                 setTimeout(() => {
                     google.maps.event.trigger(map, 'resize');
@@ -727,8 +778,16 @@
             renderRouteSimulation();
         }
 
-        function toggleChecklist(key) {
-            state.checklist[key] = !state.checklist[key];
+        function toggleChecklist(vid, key) {
+            const k = vid + ':' + key;
+            state.checklist[k] = !state.checklist[k];
+            renderChecklist();
+        }
+
+        function resetChecklist(vid) {
+            Object.keys(state.checklist).forEach(k => {
+                if (k.startsWith(vid + ':')) delete state.checklist[k];
+            });
             renderChecklist();
         }
 
@@ -751,7 +810,7 @@
             if (state.traffic === 'lento') trafficMultiplier = 1.4;
             if (state.traffic === 'intenso') trafficMultiplier = 1.9;
             let weatherDelay = 0;
-            if (state.weather === 'chuva') weatherDelay = 120; 
+            if (state.weather === 'chuva') weatherDelay = 120;
             const adjustedSeconds = Math.round(totalSeconds * trafficMultiplier + weatherDelay);
             return {
                 nominalMins: Math.floor(totalSeconds / 60),
@@ -767,7 +826,7 @@
 
         function calculateAndDisplayRoute() {
             if (!directionsService || !directionsRenderer) return;
-            
+
             const destino = destinosData[state.destKey];
             if (!destino) return;
 
@@ -780,8 +839,6 @@
             directionsService.route(request, (result, status) => {
                 if (status === 'OK') {
                     directionsRenderer.setDirections(result);
-                    
-                    // Força o mapa a dar zoom exato na rota desenhada
                     const bounds = new google.maps.LatLngBounds();
                     bounds.extend(request.origin);
                     bounds.extend(request.destination);
@@ -800,13 +857,13 @@
             document.getElementById('viaActiveName').textContent = t.viaName + (t.tag ? ' (' + t.tag + ')' : '');
             document.getElementById('distChip').textContent = t.distance + ' km (simulado)';
             document.getElementById('adjustedTime').textContent = t.adjustedMins + 'm ' + t.adjustedSecs + 's';
-            
+
             let nominalText = 'Tempo nominal sem trânsito: ' + t.nominalMins + 'm ' + t.nominalSecs + 's';
             if (t.tempoNominalMinutos) {
                 nominalText += ' (referência: ' + t.tempoNominalMinutos + ' min)';
             }
             document.getElementById('nominalTime').textContent = nominalText;
-            
+
             const warn = state.traffic === 'intenso' || state.weather === 'chuva';
             document.getElementById('warningBox').classList.toggle('hidden', !warn);
         }
@@ -904,15 +961,51 @@
         }
 
         function renderChecklist() {
-            const el = document.getElementById('checklistBox');
-            el.innerHTML = Object.keys(checklistItems).map(key => {
-                const done = !!state.checklist[key];
+            const keys = checklistGroups.flatMap(g => g.items.map(i => i[0]));
+            const total = keys.length;
+            let overallDone = 0;
+
+            document.getElementById('checklistBox').innerHTML = veiculos.map(v => {
+                const done = keys.filter(k => state.checklist[v.id + ':' + k]).length;
+                overallDone += done;
+                const pct = Math.round((done / total) * 100);
+                const ready = done === total;
+
+                const groups = checklistGroups.map((g, gi) => `
+                    <div class="check-group-title ${gi === 0 ? 'first' : ''}">${g.title}</div>
+                    ${g.items.map(([key, label]) => {
+                        const isDone = !!state.checklist[v.id + ':' + key];
+                        return `
+                            <button class="checklist-item ${isDone ? 'done' : ''}" onclick="toggleChecklist('${v.id}','${key}')">
+                                <span class="dot"></span>
+                                <span class="label">${label}</span>
+                            </button>`;
+                    }).join('')}
+                `).join('');
+
                 return `
-                    <button class="checklist-item ${done ? 'done' : ''}" onclick="toggleChecklist('${key}')">
-                        <span class="dot"></span>
-                        <span class="label">${checklistItems[key]}</span>
-                    </button>`;
+                    <div class="card">
+                        <div class="veh-head">
+                            <div class="veh-id">
+                                <div class="veh-badge">${v.num}</div>
+                                <div><h3>${v.nome}</h3><p>${v.modelo}</p></div>
+                            </div>
+                            <span class="veh-status ${ready ? 'ready' : ''}">${ready ? 'Liberada' : 'Em preparação'}</span>
+                        </div>
+                        <div class="progress-wrap">
+                            <div class="progress-meta"><span>${done} de ${total} itens</span><span class="pct">${pct}%</span></div>
+                            <div class="progress-bar"><div class="progress-fill ${ready ? 'complete' : ''}" style="width:${pct}%"></div></div>
+                        </div>
+                        ${groups}
+                        <div class="veh-foot">
+                            <button class="btn btn-ghost" onclick="resetChecklist('${v.id}')">Reiniciar checklist</button>
+                        </div>
+                    </div>`;
             }).join('');
+
+            const all = total * veiculos.length;
+            document.getElementById('checklistOverall').innerHTML =
+                'Progresso geral <b>' + Math.round((overallDone / all) * 100) + '%</b>';
         }
 
         function init() {
