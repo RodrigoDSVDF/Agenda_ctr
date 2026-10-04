@@ -659,14 +659,14 @@
                 <div class="print-only print-header">
                     <div>
                         <h1>Checklist de Preparação das Viaturas</h1>
-                        <p>Painel de Antecipação de Rotas · Haval, Corolla 53 e Corolla 56</p>
+                        <p>Painel de Antecipação de Rotas · Hotel Alfa, Tango Sexto Terceiro e Tango Quinto Sexto</p>
                     </div>
                     <div class="stamp" id="printDate"></div>
                 </div>
                 <div class="page-header">
                     <div>
                         <h2>Checklist de Preparação das Viaturas</h2>
-                        <p>Verificação lado a lado do Haval e dos Corollas 53 e 56 antes de iniciar os deslocamentos do dia.</p>
+                        <p>Verificação lado a lado das viaturas Hotel Alfa, Tango Sexto Terceiro e Tango Quinto Sexto antes de iniciar os deslocamentos do dia.</p>
                     </div>
                     <div class="print-actions">
                         <div class="overall-chip" id="checklistOverall"></div>
@@ -762,9 +762,9 @@
 
         // Viaturas exibidas lado a lado no checklist
         const veiculos = [
-            { id: 'haval', num: 'HV', nome: 'Haval', modelo: 'GWM Haval' },
-            { id: 'cor53', num: '53', nome: 'Corolla 53', modelo: 'Toyota Corolla' },
-            { id: 'cor56', num: '56', nome: 'Corolla 56', modelo: 'Toyota Corolla' },
+            { id: 'haval', num: 'HA', nome: 'Hotel Alfa', modelo: 'Viatura' },
+            { id: 'cor53', num: 'TST', nome: 'Tango Sexto Terceiro', modelo: 'Viatura' },
+            { id: 'cor56', num: 'TQS', nome: 'Tango Quinto Sexto', modelo: 'Viatura' },
         ];
 
         const checklistGroups = [
@@ -838,7 +838,7 @@
 
         // ===== CONFIGURAÇÃO =====
         // Cole aqui a chave da Google Maps API (e restrinja-a por referenciador HTTP no Google Cloud Console)
-        const GOOGLE_MAPS_API_KEY = 'AIzaSyBU9dvL8v0xipqvWUXl5aldka-rm48cmOQ';
+        const GOOGLE_MAPS_API_KEY = 'SUA_CHAVE_AQUI';
 
         const STORAGE_KEY = 'painelRotas.v1';
         const PHOTOS_KEY = 'painelRotas.fotos.v1';
@@ -1266,7 +1266,7 @@
             document.getElementById('printPhotos').innerHTML = comFotos.length
                 ? '<h2>Anexo — Registro fotográfico</h2>' + comFotos.map(v => `
                     <div class="annex-veh">
-                        <h3>${v.nome} · ${v.modelo}</h3>
+                        <h3>${v.nome}</h3>
                         <div class="annex-grid">${state.photos[v.id].map((src, i) => `<img src="${src}" alt="Foto ${i + 1} - ${v.nome}" />`).join('')}</div>
                     </div>`).join('')
                 : '';
