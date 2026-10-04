@@ -640,11 +640,16 @@
 
     <script>
         // Coordenadas aproximadas reais (Brasília)
-        const SEDE_COORD = { lat: -15.7942, lng: -47.8825 }; // Sede BCB approx
+        // Origem de todas as rotas: Edifício-Sede do Banco Central do Brasil.
+        // A rota é calculada pelo ENDEREÇO (o Google localiza o ponto exato).
+        const SEDE_NOME = 'Banco Central do Brasil';
+        const SEDE_ENDERECO = 'Banco Central do Brasil - Edifício-Sede, SBS Quadra 3 Bloco B, Brasília - DF, 70074-900';
+        // Coordenada aproximada, usada só para centralizar o mapa e para a linha reta de reserva
+        const SEDE_COORD = { lat: -15.7978, lng: -47.8917 };
 
         const destinosData = {
             aeroporto: {
-                title: 'Sede ➔ Aeroporto Internacional de Brasília',
+                title: 'Banco Central ➔ Aeroporto Internacional de Brasília',
                 destination: 'Aeroporto Internacional de Brasília',
                 destCoord: { lat: -15.8711, lng: -47.9186 },
                 vias: [
@@ -654,7 +659,7 @@
                 ]
             },
             planalto: {
-                title: 'Sede ➔ Palácio do Planalto',
+                title: 'Banco Central ➔ Palácio do Planalto',
                 destination: 'Palácio do Planalto',
                 destCoord: { lat: -15.7985, lng: -47.8655 },
                 vias: [
@@ -664,7 +669,7 @@
                 ]
             },
             congresso: {
-                title: 'Sede ➔ Congresso Nacional',
+                title: 'Banco Central ➔ Congresso Nacional',
                 destination: 'Congresso Nacional',
                 destCoord: { lat: -15.7995, lng: -47.8645 },
                 vias: [
@@ -673,7 +678,7 @@
                 ]
             },
             universidade: {
-                title: 'Sede ➔ Universidade do Banco Central',
+                title: 'Banco Central ➔ Universidade do Banco Central',
                 destination: 'Universidade do Banco Central (UniBACEN)',
                 destCoord: { lat: -15.7844, lng: -47.8801 },
                 vias: [
@@ -683,7 +688,7 @@
                 ]
             },
             piantas: {
-                title: 'Sede ➔ Piantas Bistrô',
+                title: 'Banco Central ➔ Piantas Bistrô',
                 destination: 'Piantas Bistrô',
                 destCoord: { lat: -15.8358, lng: -47.8296 },
                 vias: [
@@ -693,7 +698,7 @@
                 ]
             },
             rubaiyat: {
-                title: 'Sede ➔ Rubaiyat',
+                title: 'Banco Central ➔ Rubaiyat',
                 destination: 'Rubaiyat',
                 destCoord: { lat: -15.8305, lng: -47.8254 },
                 vias: [
@@ -712,13 +717,13 @@
 
         const checklistGroups = [
             { title: 'Veículo', items: [
-                ['inspecao', 'Inspeção completa do veículo'],
                 ['combustivel', 'Nível de combustível verificado'],
                 ['pneus', 'Pneus e calibragem conferidos'],
-                ['fluidos', 'Óleo, água e freios verificados'],
+                ['oleoMotor', 'Óleo do motor verificado'],
+                ['agua', 'Nível de água verificado'],
+                ['oleoFreio', 'Óleo de freio verificado'],
             ]},
-            { title: 'Comunicação e documentação', items: [
-                ['comunicacao', 'Equipamento de comunicação testado'],
+            { title: 'Documentação', items: [
                 ['documentacao', 'Documentação da viagem em ordem'],
             ]},
             { title: 'Rota e segurança', items: [
@@ -952,7 +957,7 @@
 
         async function calculateAndDisplayRoute() {
             if (!map) {
-                showRouteError('O Google Maps ainda não carregou. Verifique a chave da API na linha do <script> e recarregue a página.');
+                showRouteError('O Google Maps ainda não carregou. Verifique a chave da API (GOOGLE_MAPS_API_KEY) e recarregue a página.');
                 return;
             }
 
@@ -966,7 +971,7 @@
             try {
                 const { Route } = await google.maps.importLibrary('routes');
                 const { routes } = await Route.computeRoutes({
-                    origin: SEDE_COORD,
+                    origin: SEDE_ENDERECO,
                     destination: destino.destCoord,
                     travelMode: 'DRIVING',
                     fields: ['path', 'viewport', 'distanceMeters', 'durationMillis'],
@@ -983,8 +988,11 @@
                     l.setOptions({ strokeColor: '#f59e0b', strokeWeight: 6, strokeOpacity: 0.9 });
                     l.setMap(map);
                 });
+                // Marcador A no início real do traçado (ponto exato da sede segundo o Google)
+                const p0 = routes[0].path && routes[0].path[0];
+                const startPos = p0 ? { lat: p0.lat, lng: p0.lng } : origin;
                 fallbackMarkers = [
-                    new google.maps.Marker({ position: origin, map, label: 'A' }),
+                    new google.maps.Marker({ position: startPos, map, label: 'A', title: SEDE_NOME }),
                     new google.maps.Marker({ position: dest, map, label: 'B' })
                 ];
                 if (routes[0].viewport) map.fitBounds(routes[0].viewport);
