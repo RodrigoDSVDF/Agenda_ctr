@@ -427,6 +427,15 @@
         }
         .theme-toggle:hover { color: var(--text); border-color: var(--amber-border); }
 
+        .obs-box {
+            width: 100%; min-height: 96px; padding: 12px 14px; resize: vertical;
+            background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md);
+            color: var(--text); font-size: 12px; line-height: 1.6; font-family: inherit;
+            transition: var(--transition);
+        }
+        .obs-box::placeholder { color: var(--text-dimmer); }
+        .obs-box:focus { outline: none; border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-soft); }
+
         :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
 
 
@@ -486,6 +495,8 @@
 
             .theme-toggle { display: none !important; }
             .checklist-item.done { border-bottom-color: #ddd !important; background: #fff !important; }
+            .obs-box { background: #fff !important; color: #000 !important; border: 1px solid #555; border-radius: 4px; min-height: 90px; resize: none; padding: 6px 8px; font-size: 11px; box-shadow: none; }
+            .obs-box::placeholder { color: transparent; }
             .sign-block { display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 28px; break-inside: avoid; }
             .sign-block div { border-top: 1px solid #000; padding-top: 4px; font-size: 10px; color: #000; text-transform: uppercase; letter-spacing: 0.06em; }
         }
@@ -742,13 +753,14 @@
             traffic: 'normal',
             weather: 'sol',
             checklist: {},
+            obs: {},
             theme: 'light',
         };
 
         function saveState() {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                    checklist: state.checklist, theme: state.theme
+                    checklist: state.checklist, obs: state.obs, theme: state.theme
                 }));
             } catch (e) { /* armazenamento indisponível: segue sem persistir */ }
         }
@@ -756,6 +768,7 @@
             try {
                 const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
                 if (saved.checklist) state.checklist = saved.checklist;
+                if (saved.obs) state.obs = saved.obs;
                 if (saved.theme) state.theme = saved.theme;
             } catch (e) { /* ignora dados corrompidos */ }
         }
@@ -776,7 +789,7 @@
 
         // ===== CONFIGURAÇÃO =====
         // Cole aqui a chave da Google Maps API (e restrinja-a por referenciador HTTP no Google Cloud Console)
-        const GOOGLE_MAPS_API_KEY = 'AIzaSyBU9dvL8v0xipqvWUXl5aldka-rm48cmOQ';
+        const GOOGLE_MAPS_API_KEY = 'SUA_CHAVE_AQUI';
 
         const STORAGE_KEY = 'painelRotas.v1';
         let map = null;
@@ -871,7 +884,17 @@
             window.print();
         }
 
+        function setObs(vid, value) {
+            state.obs[vid] = value;
+            saveState();
+        }
+
+        function esc(v) {
+            return String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
         function resetChecklist(vid) {
+            delete state.obs[vid];
             Object.keys(state.checklist).forEach(k => {
                 if (k.startsWith(vid + ':')) delete state.checklist[k];
             });
@@ -1113,6 +1136,8 @@
                             <div class="progress-bar"><div class="progress-fill ${ready ? 'complete' : ''}" style="width:${pct}%"></div></div>
                         </div>
                         ${groups}
+                        <div class="check-group-title">Observações</div>
+                        <textarea class="obs-box" aria-label="Observações sobre ${v.nome}" placeholder="Registre aqui qualquer observação sobre esta viatura..." oninput="setObs('${v.id}', this.value)">${esc(state.obs[v.id])}</textarea>
                         <div class="veh-foot">
                             <button class="btn btn-ghost" onclick="resetChecklist('${v.id}')">Reiniciar checklist</button>
                         </div>
